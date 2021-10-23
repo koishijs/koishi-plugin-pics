@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-pics",
   "description": "Koishi 的随机图片插件",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -26,7 +26,8 @@
   },
   "homepage": "https://code.mycard.moe/3rdeye/koishi-plugin-pics",
   "dependencies": {
-    "source-map-support": "^0.5.20"
+    "source-map-support": "^0.5.20",
+    "koishi-utils-schemagen": "^1.1.7"
   },
   "peerDependencies": {
     "koishi": "^4.0.0-alpha.11"
@@ -40,7 +41,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
     "koishi": "^4.0.0-alpha.11",
-    "koishi-utils-schemagen": "^1.1.7",
     "lodash": "^4.17.21",
     "prettier": "^2.4.1",
     "raw-loader": "^4.0.2",
