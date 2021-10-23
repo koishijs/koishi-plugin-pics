@@ -206,6 +206,9 @@ export class PicsPlugin {
         if (result.description) {
           msg += `\n${result.description}`;
         }
+        if (ctx.assets) {
+          msg = await ctx.assets.transform(msg);
+        }
         return msg;
       })
       .subcommand('.sources', '查询图源列表')
