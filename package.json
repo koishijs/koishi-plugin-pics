@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-pics",
   "description": "Koishi 的随机图片插件",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

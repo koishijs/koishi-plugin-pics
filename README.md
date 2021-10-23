@@ -10,10 +10,6 @@ Koishi 的随机图片插件
 npm install koishi-plugin-pics
 ```
 
-### 直接安装
-
-在 https://cdn02.moecube.com:444/nanahira/koishi-plugin/pics/index.js 下载即可。
-
 ## 命令
 
 ### 获取随机图片
@@ -141,6 +137,8 @@ export interface PicSourceInfo {
 #### `PicSourceConfig`
 
 [`koishi-utils-schemagen`](https://code.mycard.moe/3rdeye/koishi-utils-schemagen) 用户可以使用 `PicSourceConfig` 类。插件的配置文件直接继承该类即可。
+
+> `koishi-utils-schemagen` 包请**不要**使用 Webpack 打包。使用 Webpack 编写插件的用户请把该包列为 external 。
 
 ```ts
 export class PicSourceConfig {
