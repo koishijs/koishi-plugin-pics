@@ -23,7 +23,7 @@ upload_to_minio:
   tags:
     - linux
   script:
-    - aws s3 --endpoint=https://minio.mycard.moe:9000 sync --delete dist/ s3://nanahira/koishi-plugin/myplugin
+    - aws s3 --endpoint=https://minio.mycard.moe:9000 sync --delete dist/ s3://nanahira/koishi-plugin/pics
   only:
     - master
 

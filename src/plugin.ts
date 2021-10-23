@@ -22,8 +22,6 @@ declare module 'koishi' {
   }
 }
 
-Context.service('pics');
-
 export interface PicResult {
   url: string;
   description?: string;
@@ -35,6 +33,7 @@ export class PicSource implements PicSourceInfo {
   weight = 1;
   name = 'default';
   description = '';
+  default = false;
   randomPic(picTags: string[]): Awaitable<PicResult> {
     // For override
     throw new Error(`Not implemented`);
@@ -92,7 +91,7 @@ export class PicsContainer {
     return Array.from(this.sources.keys());
   }
 
-  pickAvailableSources(sourceTags: string[] = []) {
+  pickAvailableSources(sourceTags: string[] = [], includeNonDefault = false) {
     let sources = this.allSources();
     if (sourceTags.length) {
       sources = sources.filter(
@@ -100,6 +99,8 @@ export class PicsContainer {
           sourceTags.some((exact) => s.name === exact) ||
           sourceTags.every((t) => s.tags.includes(t)),
       );
+    } else if (!includeNonDefault) {
+      sources = sources.filter((s) => s.default);
     }
     return sources;
   }
@@ -217,7 +218,7 @@ export class PicsPlugin {
         const sourceTags = argv.options.source
           ? argv.options.source.split(',')
           : [];
-        const sources = ctx.pics.pickAvailableSources(sourceTags);
+        const sources = ctx.pics.pickAvailableSources(sourceTags, true);
         return `图源的列表如下:\n${sources
           .map((s) => s.getDisplayString())
           .join('\n')}`;

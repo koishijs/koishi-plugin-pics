@@ -5,6 +5,8 @@ import { PicsPluginConfigLike } from './config';
 export * from './config';
 export * from './plugin';
 
+Context.service('pics');
+
 export const name = 'pics';
 const plugin = new PicsPlugin();
 export const schema = plugin.schema;

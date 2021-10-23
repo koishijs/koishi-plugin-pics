@@ -22,6 +22,7 @@ export interface PicSourceInfo {
   weight?: number;
   name: string;
   description?: string;
+  default?: boolean;
 }
 
 export class PicSourceConfig implements PicSourceInfo {
@@ -33,12 +34,16 @@ export class PicSourceConfig implements PicSourceInfo {
   name: string;
   @DefineSchema({ desc: '图源描述' })
   description?: string;
+  @DefineSchema({ desc: '是否为默认图源' })
+  default?: boolean;
 
+  // 给目标对象注入上述对象。
   applyTo(target: PicSourceInfo) {
     target.tags ||= this.tags;
     target.weight ||= this.weight;
     target.name ||= this.name;
     target.description ||= this.description;
+    target.default = this.default;
   }
 }
 
