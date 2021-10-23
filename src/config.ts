@@ -39,10 +39,10 @@ export class PicSourceConfig implements PicSourceInfo {
 
   // 给目标对象注入上述对象。
   applyTo(target: PicSourceInfo) {
-    target.tags ||= this.tags;
-    target.weight ||= this.weight;
-    target.name ||= this.name;
-    target.description ||= this.description;
+    target.tags = this.tags;
+    target.weight = this.weight;
+    target.name = this.name;
+    target.description = this.description;
     target.default = this.default;
   }
 }
