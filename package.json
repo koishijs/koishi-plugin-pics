@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://code.mycard.moe/3rdeye/koishi-plugin-pics.git"
+    "url": "https://github.com/koishijs/koishi-plugin-pics.git"
   },
   "author": "Nanahira <nanahira@momobako.com>",
   "license": "MIT",
@@ -22,9 +22,9 @@
     "service:picscontainer"
   ],
   "bugs": {
-    "url": "https://code.mycard.moe/3rdeye/koishi-plugin-pics/issues"
+    "url": "https://github.com/koishijs/koishi-plugin-pics/issues"
   },
-  "homepage": "https://code.mycard.moe/3rdeye/koishi-plugin-pics",
+  "homepage": "https://github.com/koishijs/koishi-plugin-pics",
   "dependencies": {
     "source-map-support": "^0.5.20",
     "koishi-utils-schemagen": "^1.1.7"
