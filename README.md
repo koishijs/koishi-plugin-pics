@@ -47,9 +47,9 @@ pic.sources 查询全部的图源。 pic -s pixiv 查询含有 pixiv 标签的�
 
 下面是一些开箱即用的图源。如果你希望你编写的图源插件在此处列出，欢迎提交 Pull Request 或发邮件给 `nanahira@momobako.com` 。
 
-* [`koishi-plugin-picsource-localfs`](https://code.mycard.moe/3rdeye/koishi-plugin-picsource-localfs) 本地文件图源。
+* [`koishi-plugin-picsource-localfs`](https://github.com/koishijs/koishi-plugin-picsource-localfs) 本地文件图源。
 
-* [`koishi-plugin-picsource-lolicon`](https://code.mycard.moe/3rdeye/koishi-plugin-picsource-lolicon) [Lolicon](https://api.lolicon.app/ )图源。
+* [`koishi-plugin-picsource-lolicon`](https://github.com/koishijs/koishi-plugin-picsource-lolicon) [Lolicon](https://api.lolicon.app/ )图源。
 
 ### 类定义
 
@@ -136,7 +136,7 @@ export interface PicSourceInfo {
 
 #### `PicSourceConfig`
 
-[`koishi-utils-schemagen`](https://code.mycard.moe/3rdeye/koishi-utils-schemagen) 用户可以使用 `PicSourceConfig` 类。插件的配置文件直接继承该类即可。
+[`koishi-utils-schemagen`](https://github.com/koishijs/koishi-utils-schemagen) 用户可以使用 `PicSourceConfig` 类。插件的配置文件直接继承该类即可。
 
 > `koishi-utils-schemagen` 包请**不要**使用 Webpack 打包。使用 Webpack 编写插件的用户请把该包列为 external 。
 
