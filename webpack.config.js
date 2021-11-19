@@ -1,4 +1,18 @@
 const path = require('path');
+const packgeInfo = require('./package.json');
+
+function externalsFromDep() {
+  return Object.fromEntries(
+    [
+      ...Object.keys(packgeInfo.dependencies || {}),
+      ...Object.keys(packgeInfo.peerDependencies || {}),
+    ]
+      .filter((dep) => dep !== 'source-map-support')
+      .map((dep) => [dep, dep]),
+  );
+}
+
+const packAll = !!process.env.PACK_ALL;
 
 module.exports = {
   entry: './src/index.ts',
@@ -23,10 +37,10 @@ module.exports = {
     library: {
       type: 'commonjs',
     },
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, packAll ? 'dist/full' : 'dist'),
   },
   externals: {
     koishi: 'koishi',
-    'koishi-utils-schemagen': 'koishi-utils-schemagen',
+    ...(packAll ? {} : externalsFromDep()),
   },
 };

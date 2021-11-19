@@ -184,7 +184,7 @@ export class PicsPlugin {
       )
       .option(
         'source',
-        '-s <source:string>  指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。',
+        `-s <source:string>  指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
       )
       .option('tag', '-t <tag:string>  需要查询的图片标签，逗号分隔。')
       .example(

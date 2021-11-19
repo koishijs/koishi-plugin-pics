@@ -16,6 +16,17 @@ build:
     paths:
       - dist/
 
+upload_to_minio:
+  stage: deploy
+  dependencies:
+    - build
+  tags:
+    - linux
+  script:
+    - aws s3 --endpoint=https://minio.mycard.moe:9000 sync --delete dist/full/ s3://nanahira/koishi-plugin/pics
+  only:
+    - master
+
 deploy_npm:
   stage: deploy
   dependencies:
