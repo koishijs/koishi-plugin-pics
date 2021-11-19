@@ -164,7 +164,7 @@ export class PicsContainer {
 
   async randomPic(picTags: string[] = [], sourceTags: string[] = []) {
     const sources = this.pickAvailableSources(sourceTags);
-    return this.fetchPicsWithSources(sources, sourceTags);
+    return this.fetchPicsWithSources(sources, picTags);
   }
 }
 
