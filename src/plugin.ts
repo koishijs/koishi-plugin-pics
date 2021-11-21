@@ -5,11 +5,6 @@ import {
   PicsPluginConfig,
   PicsPluginConfigLike,
 } from './config';
-import {
-  DefineSchema,
-  schemaFromClass,
-  schemaTransform,
-} from 'koishi-utils-schemagen';
 import _ from 'lodash';
 import { segment } from 'koishi';
 
@@ -172,10 +167,10 @@ export class PicsPlugin {
   private config: PicsPluginConfig;
   private ctx: Context;
   name = 'pics-main';
-  schema: Schema<PicsPluginConfigLike> = schemaFromClass(PicsPluginConfig);
-  apply(ctx: Context, config: PicsPluginConfigLike) {
+  schema = PicsPluginConfig;
+  apply(ctx: Context, config: PicsPluginConfig) {
     this.ctx = ctx;
-    this.config = schemaTransform(PicsPluginConfig, config);
+    this.config = config;
     ctx.pics = new PicsContainer(ctx);
     ctx
       .command(`${this.config.commandName}`, '获取随机图片')

@@ -1,6 +1,8 @@
 import 'source-map-support/register';
-import { DefineSchema, schemaFromClass } from 'koishi-utils-schemagen';
+import { DefineSchema, RegisterSchema } from 'schemastery-gen';
+import { Schema } from 'koishi';
 
+@RegisterSchema()
 export class PicsPluginConfig {
   @DefineSchema({ desc: '命令名', default: 'pic', hidden: true })
   commandName: string;
@@ -47,4 +49,4 @@ export class PicSourceConfig implements PicSourceInfo {
   }
 }
 
-export const PicSourceSchema = schemaFromClass(PicSourceConfig);
+export const PicSourceSchema = (PicSourceConfig as unknown) as Schema<PicSourceInfo>;
