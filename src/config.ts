@@ -1,5 +1,5 @@
 import 'source-map-support/register';
-import { DefineSchema, RegisterSchema } from 'schemastery-gen';
+import { DefineSchema, RegisterSchema, schemaFromClass } from 'schemastery-gen';
 import { Schema } from 'koishi';
 
 @RegisterSchema()
@@ -49,4 +49,4 @@ export class PicSourceConfig implements PicSourceInfo {
   }
 }
 
-export const PicSourceSchema = (PicSourceConfig as unknown) as Schema<PicSourceInfo>;
+export const PicSourceSchema = schemaFromClass(PicSourceConfig);
