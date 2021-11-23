@@ -10,4 +10,4 @@ Dockerfile
 .eslintrc.js
 .prettierrc
 webpack.config.js
-tsconfig.json
+tsconfig.json/dist/full
