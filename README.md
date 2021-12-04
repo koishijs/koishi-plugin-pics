@@ -104,7 +104,7 @@ class MyPicSource extends PicSource {
 
 }
 
-export function apply(ctx: Context, config: Config) {
+export function apply(ctx: Context, config: PluginConfig) {
   ctx.on('service/pics', () => ctx.pics.addSource(new MyPicSource(ctx, config), ctx));
 }
 ```

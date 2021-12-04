@@ -9,7 +9,7 @@ Context.service('pics');
 
 export const name = 'pics';
 const plugin = new PicsPlugin();
-export const schema = plugin.schema;
+export const Config = plugin.schema;
 export function apply(ctx: Context, config: PicsPluginConfig) {
   ctx.plugin(plugin, config);
 }
