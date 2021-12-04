@@ -4,11 +4,11 @@ import { Schema } from 'koishi';
 
 @RegisterSchema()
 export class PicsPluginConfig {
-  @DefineSchema({ desc: '命令名', default: 'pic', hidden: true })
+  @DefineSchema({ description: '命令名', default: 'pic', hidden: true })
   commandName: string;
 
   @DefineSchema({
-    desc: '获取失败的提示信息',
+    description: '获取失败的提示信息',
     default: '未找到任何图片。',
     hidden: true,
   })
@@ -28,15 +28,15 @@ export interface PicSourceInfo {
 }
 
 export class PicSourceConfig implements PicSourceInfo {
-  @DefineSchema({ type: 'string', default: [], desc: '图源标签' })
+  @DefineSchema({ type: 'string', default: [], description: '图源标签' })
   tags: string[];
-  @DefineSchema({ default: 1, desc: '图源权重' })
+  @DefineSchema({ default: 1, description: '图源权重' })
   weight: number;
-  @DefineSchema({ default: 1, desc: '图源名称', required: true })
+  @DefineSchema({ default: 1, description: '图源名称', required: true })
   name: string;
-  @DefineSchema({ desc: '图源描述' })
+  @DefineSchema({ description: '图源描述' })
   description?: string;
-  @DefineSchema({ desc: '是否为默认图源' })
+  @DefineSchema({ description: '是否为默认图源' })
   default?: boolean;
 
   // 给目标对象注入上述对象。
