@@ -28,7 +28,7 @@ export class PicSource implements PicSourceInfo {
   weight = 1;
   name = 'default';
   description = '';
-  default = false;
+  isDefault = false;
   randomPic(picTags: string[]): Awaitable<PicResult> {
     // For override
     throw new Error(`Not implemented`);
@@ -95,7 +95,7 @@ export class PicsContainer {
           sourceTags.every((t) => s.tags.includes(t)),
       );
     } else if (!includeNonDefault) {
-      sources = sources.filter((s) => s.default);
+      sources = sources.filter((s) => s.isDefault);
     }
     return sources;
   }
