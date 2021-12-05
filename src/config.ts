@@ -4,6 +4,7 @@ import { Schema } from 'koishi';
 
 @RegisterSchema()
 export class PicsPluginConfig {
+  constructor(config: Partial<PicsPluginConfig>) {}
   @DefineSchema({ description: '命令名', default: 'pic', hidden: true })
   commandName: string;
 
