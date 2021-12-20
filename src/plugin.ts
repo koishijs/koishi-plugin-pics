@@ -58,11 +58,11 @@ export class PicsContainer {
 
   addSource(source: PicSource, targetCtx?: Context) {
     const processingCtx: Context = targetCtx || this[Context.current];
-    const dispose = processingCtx.on('disconnect', () =>
+    const dispose = processingCtx.on('dispose', () =>
       this.removeSource(source),
     );
     this.sources.set(source, dispose);
-    processingCtx.on('connect', () => source.onStartup());
+    processingCtx.on('ready', () => source.onStartup());
     this.ctx.logger('pics').info(`Loaded pic source ${source.name}.`);
   }
 
