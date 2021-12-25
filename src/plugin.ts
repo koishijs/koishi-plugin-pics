@@ -196,6 +196,7 @@ export class PicsPlugin {
         }
         let msg = `获取到图片:\n${segment('image', {
           url: result.url,
+          file: result.url.split('/').pop(),
           cache: true,
         })}`;
         if (result.description) {
