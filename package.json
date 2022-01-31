@@ -27,11 +27,11 @@
   "homepage": "https://github.com/koishijs/koishi-plugin-pics",
   "dependencies": {
     "lodash": "^4.17.21",
-    "schemastery-gen": "^2.3.1",
+    "schemastery-gen": "^2.3.2",
     "source-map-support": "^0.5.20"
   },
   "peerDependencies": {
-    "koishi": "^4.1.0"
+    "koishi": "^4.1.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.176",
@@ -41,7 +41,7 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
-    "koishi": "^4.1.0",
+    "koishi": "^4.1.1",
     "prettier": "^2.4.1",
     "raw-loader": "^4.0.2",
     "ts-loader": "^9.2.6",
