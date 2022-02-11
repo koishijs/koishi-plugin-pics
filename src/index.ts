@@ -201,7 +201,6 @@ export default class PicsContainer
         }
         const picData: segment.Data = {
           url: result.url,
-          file: result.url.split('/').pop(),
           cache: true,
         };
         if (this.config.preseveFilename) {
