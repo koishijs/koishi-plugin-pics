@@ -19,19 +19,20 @@
     "qqbot",
     "cqhttp",
     "onebot",
-    "service:picscontainer"
+    "impl:pics",
+    "optional:assets"
   ],
   "bugs": {
     "url": "https://github.com/koishijs/koishi-plugin-pics/issues"
   },
   "homepage": "https://github.com/koishijs/koishi-plugin-pics",
   "dependencies": {
-    "koishi-thirdeye": "^8.1.5",
+    "koishi-thirdeye": "^8.2.0",
     "lodash": "^4.17.21",
     "source-map-support": "^0.5.20"
   },
   "peerDependencies": {
-    "koishi": "^4.1.1"
+    "koishi": "^4.2.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.176",
@@ -41,7 +42,7 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
-    "koishi": "^4.1.2",
+    "koishi": "^4.2.0",
     "prettier": "^2.4.1",
     "raw-loader": "^4.0.2",
     "ts-loader": "^9.2.6",
