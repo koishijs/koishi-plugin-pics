@@ -13,6 +13,9 @@ export class PicsPluginConfig {
     hidden: true,
   })
   failedMessage: string;
+
+  @DefineSchema({ description: '保留 URL 中的文件名。', default: false })
+  preseveFilename: boolean;
 }
 
 export type PicsPluginConfigLike = Partial<PicsPluginConfig>;

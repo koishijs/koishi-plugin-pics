@@ -199,11 +199,15 @@ export default class PicsContainer
         if (!result) {
           return this.config.failedMessage;
         }
-        let msg = `获取到图片:\n${segment('image', {
+        const picData: segment.Data = {
           url: result.url,
           file: result.url.split('/').pop(),
           cache: true,
-        })}`;
+        };
+        if (this.config.preseveFilename) {
+          picData.file = result.url.split('/').pop();
+        }
+        let msg = `获取到图片:\n${segment('image', picData)}`;
         if (result.description) {
           msg += `\n${result.description}`;
         }
