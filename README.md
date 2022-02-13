@@ -49,7 +49,11 @@ pic.sources 查询全部的图源。 pic -s pixiv 查询含有 pixiv 标签的�
 
 * [`koishi-plugin-picsource-localfs`](https://github.com/koishijs/koishi-plugin-picsource-localfs) 本地文件图源。
 
-* [`koishi-plugin-picsource-lolicon`](https://github.com/koishijs/koishi-plugin-picsource-lolicon) [Lolicon](https://api.lolicon.app/ )图源。
+* [`koishi-plugin-picsource-lolicon`](https://github.com/koishijs/koishi-plugin-picsource-lolicon) [Lolicon](https://api.lolicon.app/ ) 图源。
+
+* [`koishi-plugin-picsource-heisi`](https://github.com/koishijs/koishi-plugin-picsource-localfs) 黑丝图源。
+
+* [`koishi-plugin-picsource-lolicon`](https://github.com/koishijs/koishi-plugin-picsource-lolicon) [Yande](https://yande.re/) 以及 [Konachan](https://konachan.com) 图源。
 
 ### 类定义
 
@@ -104,8 +108,10 @@ class MyPicSource extends PicSource {
 
 }
 
+export const using = ['pics'];
+
 export function apply(ctx: Context, config: PluginConfig) {
-  ctx.on('service/pics', () => ctx.pics.addSource(new MyPicSource(ctx, config), ctx));
+  ctx.pics.addSource(new MyPicSource(ctx, config));
 }
 ```
 
@@ -136,9 +142,9 @@ export interface PicSourceInfo {
 
 #### `PicSourceConfig`
 
-[`koishi-utils-schemagen`](https://github.com/koishijs/koishi-utils-schemagen) 用户可以使用 `PicSourceConfig` 类。插件的配置文件直接继承该类即可。
+[`schemastery-gen`](https://code.mycard.moe/3rdeye/schemastery-gen) 或 ['koishi-thirdeye'](https://code.mycard.moe/3rdeye/koishi-thirdeye) 用户可以使用 `PicSourceConfig` 类。插件的配置文件直接继承该类即可。
 
-> `koishi-utils-schemagen` 包请**不要**使用 Webpack 打包。使用 Webpack 编写插件的用户请把该包列为 external 。
+> `schemastery-gen` 包请**不要**使用 Webpack 打包。使用 Webpack 编写插件的用户请把该包列为 external 。
 
 ```ts
 export class PicSourceConfig {
