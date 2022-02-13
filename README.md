@@ -53,7 +53,7 @@ pic.sources 查询全部的图源。 pic -s pixiv 查询含有 pixiv 标签的�
 
 * [`koishi-plugin-picsource-heisi`](https://github.com/koishijs/koishi-plugin-picsource-localfs) 黑丝图源。
 
-* [`koishi-plugin-picsource-lolicon`](https://github.com/koishijs/koishi-plugin-picsource-lolicon) [Yande](https://yande.re/) 以及 [Konachan](https://konachan.com) 图源。
+* [`koishi-plugin-picsource-yande`](https://github.com/koishijs/koishi-plugin-picsource-lolicon) [Yande](https://yande.re/) 以及 [Konachan](https://konachan.com) 图源。
 
 ### 类定义
 
