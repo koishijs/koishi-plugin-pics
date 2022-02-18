@@ -6,7 +6,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint --fix .",
-    "build": "webpack && env PACK_ALL=1 webpack"
+    "build": "webpack && env PACK_ALL=1 webpack",
+    "start": "ts-node ./dev",
+    "test": "jest --passWithNoTests"
   },
   "repository": {
     "type": "git",
@@ -27,11 +29,16 @@
   },
   "homepage": "https://github.com/koishijs/koishi-plugin-pics",
   "dependencies": {
-    "koishi-thirdeye": "^8.3.2",
+    "koishi-thirdeye": "^8.3.3",
     "lodash": "^4.17.21",
     "source-map-support": "^0.5.20"
   },
   "devDependencies": {
+    "@koishijs/plugin-cache-lru": "^1.0.0-rc.0",
+    "@koishijs/plugin-console": "^3.1.1",
+    "@koishijs/plugin-database-memory": "^1.0.2",
+    "@koishijs/plugin-sandbox": "^1.0.0",
+    "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.176",
     "@types/node": "^16.11.4",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -39,15 +46,35 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
+    "jest": "^27.5.1",
     "prettier": "^2.4.1",
     "raw-loader": "^4.0.2",
+    "ts-jest": "^27.1.3",
     "ts-loader": "^9.2.6",
+    "ts-node": "^10.5.0",
     "typescript": "^4.4.4",
     "webpack": "^5.59.1",
     "webpack-cli": "^4.9.1",
     "ws": "^8.3.0"
   },
   "peerDependencies": {
-    "koishi": "^4.2.1"
+    "koishi": "^4.2.2"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "tests",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
   }
 }
