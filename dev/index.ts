@@ -26,6 +26,6 @@ app.plugin(DatabasePlugin);
 app.plugin(ExtrasInDev);
 
 // Target plugin
-app.plugin(TargetPlugin, {});
+app.plugin(TargetPlugin, {} as any);
 
 app.start();
