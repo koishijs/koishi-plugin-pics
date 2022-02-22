@@ -3,7 +3,7 @@
   "description": "Koishi 的随机图片插件",
   "version": "8.3.4",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "lint": "eslint --fix .",
     "build": "webpack && env PACK_ALL=1 webpack",
