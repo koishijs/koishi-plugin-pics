@@ -206,7 +206,7 @@ export default class PicsContainer
         if (this.config.preseveFilename) {
           picData.file = result.url.split('/').pop();
         }
-        let msg = `获取到图片:\n${segment('image', picData)}`;
+        let msg = segment('image', picData);
         if (result.description) {
           msg += `\n${result.description}`;
         }
