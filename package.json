@@ -35,9 +35,9 @@
   },
   "devDependencies": {
     "@koishijs/plugin-cache-lru": "^1.0.0-rc.0",
-    "@koishijs/plugin-console": "^3.1.1",
+    "@koishijs/plugin-console": "^3.1.2",
     "@koishijs/plugin-database-memory": "^1.0.2",
-    "@koishijs/plugin-sandbox": "^1.0.0",
+    "@koishijs/plugin-sandbox": "^1.0.2",
     "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.176",
     "@types/node": "^16.11.4",
@@ -58,7 +58,7 @@
     "ws": "^8.3.0"
   },
   "peerDependencies": {
-    "koishi": "^4.2.2"
+    "koishi": "^4.3.1"
   },
   "jest": {
     "moduleFileExtensions": [
