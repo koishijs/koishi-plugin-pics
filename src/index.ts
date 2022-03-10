@@ -177,6 +177,44 @@ export default class PicsContainer
 
   async onApply() {
     const ctx = this.ctx;
+    ctx.i18n.define('zh', `commands.${this.config.commandName}`, {
+      description: '获取随机图片',
+      options: {
+        source: `指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
+        tag: '需要查询的图片标签，逗号分隔。',
+      },
+      messages: {
+        'not-found': '未找到任何图片。',
+      },
+    });
+    ctx.i18n.define('en', `commands.${this.config.commandName}`, {
+      description: 'Get random picture',
+      options: {
+        source: `Specify picture source. Sources can be queried by command ${this.config.commandName}.sources`,
+        tag: 'Tags to search for, separated by comma.',
+      },
+      messages: {
+        'not-found': 'No pictures found.',
+      },
+    });
+    ctx.i18n.define('zh', `commands.${this.config.commandName}.sources`, {
+      description: '查询图源列表',
+      options: {
+        source: '要查询的图源标签，逗号分隔。',
+      },
+      messages: {
+        list: '图源的列表如下:',
+      },
+    });
+    ctx.i18n.define('en', `commands.${this.config.commandName}.sources`, {
+      description: 'Query picture sources',
+      options: {
+        source: 'Tags to search for, separated by comma.',
+      },
+      messages: {
+        list: 'List of sources:',
+      },
+    });
     ctx
       .command(`${this.config.commandName}`, '获取随机图片')
       .usage(
@@ -197,7 +235,7 @@ export default class PicsContainer
         const picTags = argv.options.tag ? argv.options.tag.split(',') : [];
         const result = await this.randomPic(picTags, sourceTags);
         if (!result) {
-          return this.config.failedMessage;
+          return argv.session.text('.not-found');
         }
         const picData: segment.Data = {
           url: result.url,

@@ -10,6 +10,7 @@ const app = new App({
   port: 14514,
   host: 'localhost',
   prefix: '.',
+  locale: 'en',
 });
 
 // Console and sandbox

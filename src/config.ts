@@ -7,13 +7,6 @@ export class PicsPluginConfig {
   @DefineSchema({ description: '命令名', default: 'pic', hidden: true })
   commandName: string;
 
-  @DefineSchema({
-    description: '获取失败的提示信息',
-    default: '未找到任何图片。',
-    hidden: true,
-  })
-  failedMessage: string;
-
   @DefineSchema({ description: '保留 URL 中的文件名。', default: false })
   preseveFilename: boolean;
 }
