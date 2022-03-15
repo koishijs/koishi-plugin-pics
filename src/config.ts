@@ -1,5 +1,5 @@
 // import 'source-map-support/register';
-import { DefineSchema, RegisterSchema, SchemaClass } from 'schemastery-gen';
+import { DefineSchema, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
 
 @RegisterSchema()
 export class PicsPluginConfig {
