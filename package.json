@@ -30,8 +30,7 @@
   "homepage": "https://github.com/koishijs/koishi-plugin-pics",
   "dependencies": {
     "koishi-thirdeye": "^9.2.4",
-    "lodash": "^4.17.21",
-    "source-map-support": "^0.5.20"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@koishijs/plugin-cache-lru": "^1.0.0-rc.0",

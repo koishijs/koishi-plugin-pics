@@ -1,4 +1,4 @@
-import 'source-map-support/register';
+// import 'source-map-support/register';
 import { DefineSchema, RegisterSchema, SchemaClass } from 'schemastery-gen';
 
 @RegisterSchema()

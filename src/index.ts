@@ -1,4 +1,4 @@
-import 'source-map-support/register';
+// import 'source-map-support/register';
 import { Context, Assets, Awaitable, Random, Logger } from 'koishi';
 import { PicSourceInfo, PicsPluginConfig } from './config';
 import _ from 'lodash';
