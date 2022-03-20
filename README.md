@@ -80,7 +80,7 @@ export class PicSource {
   // 图源介绍
   description: string;
   // 是否为默认图源。用户未指定参数时使用默认图源。
-  default: boolean;
+  isDefault: boolean;
 
   // 获取随机图片。 picTags 可能是空数组。
   randomPic(picTags: string[]): PicResult | Promise<PicResult>;
@@ -134,7 +134,7 @@ export interface PicSourceInfo {
   // 图源介绍
   description: string;
   // 是否为默认图源。用户未指定参数时使用默认图源。
-  default: boolean;
+  isDefault: boolean;
 }
 ```
 
@@ -148,16 +148,16 @@ export interface PicSourceInfo {
 
 ```ts
 export class PicSourceConfig {
-  @DefineSchema({ type: 'string', default: [], desc: '图源标签' })
+  @DefineSchema({ type: 'string', isDefault: [], desc: '图源标签' })
   tags: string[];
-  @DefineSchema({ default: 1, desc: '图源权重' })
+  @DefineSchema({ isDefault: 1, desc: '图源权重' })
   weight: number;
-  @DefineSchema({ default: 1, desc: '图源名称', required: true })
+  @DefineSchema({ isDefault: 1, desc: '图源名称', required: true })
   name: string;
   @DefineSchema({ desc: '图源描述' })
   description?: string;
   @DefineSchema({ desc: '是否为默认图源' })
-  default?: boolean;
+  isDefault?: boolean;
 
   // 给目标对象注入上述对象。
   applyTo(target: PicSourceInfo) {
@@ -165,7 +165,7 @@ export class PicSourceConfig {
     target.weight ||= this.weight;
     target.name ||= this.name;
     target.description ||= this.description;
-    target.default = this.default;
+    target.isDefault = this.isDefault;
   }
 }
 ```
