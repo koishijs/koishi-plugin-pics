@@ -95,23 +95,27 @@ export class PicSource {
 
 ```ts
 import { Context } from "koishi";
-import { PicSource } from "koishi-plugin-pics";
+import { DefinePlugin, Provide } from "koishi-thirdeye";
+import { PicSource, PicsContainer } from "koishi-plugin-pics";
 
-class MyPicSource extends PicSource {
-  constructor(ctx: Context, config: Config) {
+
+@DefinePlugin({ name: 'my-picsource', schema: Config })
+export default class MyPicSource extends PicSource {
+  constructor(ctx: Context, config: Partial<Config>) {
     super(ctx);
   }
-  
+
+  @Inject(true)
+  private pics: PicsContainer;
+
   randomPic(tags: string[]) {
-    return { url: 'https://1.1.1.1', description: '图片介绍' }
+    return { url: 'https://cdn02.moecube.com:444/images/ygopro-images-zh-CN/10000.jpg', description: '图片介绍' }
   }
 
-}
-
-export const using = ['pics'];
-
-export function apply(ctx: Context, config: PluginConfig) {
-  ctx.pics.addSource(new MyPicSource(ctx, config));
+  onApply() {
+    this.config.applyTo(this);
+    this.pics.addSource(this);
+  }
 }
 ```
 

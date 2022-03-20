@@ -111,7 +111,7 @@ export default class PicsContainer
           sourceTags.some((exact) => s.name === exact) ||
           sourceTags.every((t) => s.tags.includes(t)),
       );
-    } else if (!includeNonDefault) {
+    } else if (!includeNonDefault && sources.length > 1) {
       sources = sources.filter((s) => s.isDefault);
     }
     return sources;
