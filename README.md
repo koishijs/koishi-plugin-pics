@@ -148,11 +148,11 @@ export interface PicSourceInfo {
 
 ```ts
 export class PicSourceConfig {
-  @DefineSchema({ type: 'string', isDefault: [], desc: '图源标签' })
+  @DefineSchema({ type: 'string', default: [], desc: '图源标签' })
   tags: string[];
-  @DefineSchema({ isDefault: 1, desc: '图源权重' })
+  @DefineSchema({ default: 1, desc: '图源权重' })
   weight: number;
-  @DefineSchema({ isDefault: 1, desc: '图源名称', required: true })
+  @DefineSchema({ default: 1, desc: '图源名称', required: true })
   name: string;
   @DefineSchema({ desc: '图源描述' })
   description?: string;
