@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/koishijs/koishi-plugin-pics",
   "dependencies": {
-    "koishi-thirdeye": "^9.2.10",
+    "koishi-thirdeye": "^9.2.12",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
