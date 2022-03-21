@@ -4,7 +4,7 @@ import { DefineSchema, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
 @RegisterSchema()
 export class PicsPluginConfig {
   constructor(config: Partial<PicsPluginConfig>) {}
-  @DefineSchema({ description: '命令名', default: 'pic', hidden: true })
+  @DefineSchema({ description: '指令名', default: 'pic', hidden: true })
   commandName: string;
 
   @DefineSchema({ description: '保留 URL 中的文件名。', default: false })
@@ -24,6 +24,8 @@ export interface PicSourceInfo {
 }
 
 export class PicSourceConfig implements PicSourceInfo {
+  constructor(config: PicSourceInfo) {}
+
   @DefineSchema({ type: 'string', default: [], description: '图源标签' })
   tags: string[];
   @DefineSchema({ default: 1, description: '图源权重' })
