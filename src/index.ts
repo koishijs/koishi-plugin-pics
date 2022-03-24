@@ -264,7 +264,7 @@ export default class PicsContainer
           ? argv.options.source.split(',')
           : [];
         const sources = this.pickAvailableSources(sourceTags, true);
-        return `图源的列表如下:\n${sources
+        return `${argv.session.text('.list')}\n${sources
           .map((s) => s.getDisplayString())
           .join('\n')}`;
       });
