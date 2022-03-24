@@ -226,7 +226,7 @@ export default class PicsContainer
       )
       .option('tag', '-t <tag:string>  需要查询的图片标签，逗号分隔。')
       .example(
-        `${this.config.commandName} -s pixiv -t yuyuko  从 pixiv 图源中获取一张具有 yuyuko 标签的图。`,
+        `${this.config.commandName} -s yande -t yuyuko  从 yande 图源中获取一张具有 yuyuko 标签的图。`,
       )
       .action(async (argv) => {
         const sourceTags = argv.options.source
@@ -256,8 +256,9 @@ export default class PicsContainer
       .subcommand('.sources', '查询图源列表')
       .option('source', '-s <source:string>  要查询的图源标签，逗号分隔。')
       .usage('图源标签可用于图片获取的图源筛选。')
+      .example(`${this.config.commandName}.sources 查询全部的图源`)
       .example(
-        `${this.config.commandName}.sources 查询全部的图源。 ${this.config.commandName} -s pixiv 查询含有 pixiv 标签的图源。`,
+        `${this.config.commandName} -s pixiv 查询含有 pixiv 标签的图源。`,
       )
       .action(async (argv) => {
         const sourceTags = argv.options.source
