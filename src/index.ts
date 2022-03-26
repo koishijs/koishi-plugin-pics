@@ -181,7 +181,6 @@ export default class PicsContainer
       description: '获取随机图片',
       options: {
         source: `指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
-        // tag: '需要查询的图片标签，逗号分隔。',
       },
       messages: {
         'not-found': '未找到任何图片。',
@@ -189,28 +188,21 @@ export default class PicsContainer
     });
     ctx.i18n.define('en', `commands.${this.config.commandName}`, {
       description: 'Get random picture',
-      options: {
-        source: `Specify picture source. Sources can be queried by command ${this.config.commandName}.sources`,
-        // tag: 'Tags to search for, separated by comma.',
-      },
+      options: {},
       messages: {
         'not-found': 'No pictures found.',
       },
     });
     ctx.i18n.define('zh', `commands.${this.config.commandName}.sources`, {
       description: '查询图源列表',
-      options: {
-        // source: '要查询的图源标签，逗号分隔。',
-      },
+      options: {},
       messages: {
         list: '图源的列表如下:',
       },
     });
     ctx.i18n.define('en', `commands.${this.config.commandName}.sources`, {
       description: 'Query picture sources',
-      options: {
-        // source: 'Tags to search for, separated by comma.',
-      },
+      options: {},
       messages: {
         list: 'List of sources:',
       },
@@ -224,7 +216,6 @@ export default class PicsContainer
         'source',
         `-s <source:string>  指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
       )
-      // .option('tag', '-t <tag:string>  需要查询的图片标签，逗号分隔。')
       .example(
         `${this.config.commandName} yuyuko -s yande  从 yande 图源中获取一张具有 yuyuko 标签的图。`,
       )
@@ -232,7 +223,6 @@ export default class PicsContainer
         const sourceTags = argv.options.source
           ? argv.options.source.split(/[,+\uFF0C\uFF0B\u3001]/)
           : [];
-        // const picTags = argv.options.tag ? argv.options.tag.split(',') : [];
         picTags ||= [];
         const result = await this.randomPic(picTags, sourceTags);
         if (!result) {
@@ -262,9 +252,6 @@ export default class PicsContainer
         `${this.config.commandName} -s pixiv 查询含有 pixiv 标签的图源。`,
       )
       .action(async (argv, ...sourceTags) => {
-        //const sourceTags = argv.options.source
-        //  ? argv.options.source.split(',')
-        //  : [];
         sourceTags ||= [];
         const sources = this.pickAvailableSources(sourceTags, true);
         return `${argv.session.text('.list')}\n${sources
