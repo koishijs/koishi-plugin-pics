@@ -181,7 +181,7 @@ export default class PicsContainer
       description: '获取随机图片',
       options: {
         source: `指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
-        tag: '需要查询的图片标签，逗号分隔。',
+        // tag: '需要查询的图片标签，逗号分隔。',
       },
       messages: {
         'not-found': '未找到任何图片。',
@@ -191,7 +191,7 @@ export default class PicsContainer
       description: 'Get random picture',
       options: {
         source: `Specify picture source. Sources can be queried by command ${this.config.commandName}.sources`,
-        tag: 'Tags to search for, separated by comma.',
+        // tag: 'Tags to search for, separated by comma.',
       },
       messages: {
         'not-found': 'No pictures found.',
@@ -200,7 +200,7 @@ export default class PicsContainer
     ctx.i18n.define('zh', `commands.${this.config.commandName}.sources`, {
       description: '查询图源列表',
       options: {
-        source: '要查询的图源标签，逗号分隔。',
+        // source: '要查询的图源标签，逗号分隔。',
       },
       messages: {
         list: '图源的列表如下:',
@@ -209,14 +209,14 @@ export default class PicsContainer
     ctx.i18n.define('en', `commands.${this.config.commandName}.sources`, {
       description: 'Query picture sources',
       options: {
-        source: 'Tags to search for, separated by comma.',
+        // source: 'Tags to search for, separated by comma.',
       },
       messages: {
         list: 'List of sources:',
       },
     });
     ctx
-      .command(`${this.config.commandName}`, '获取随机图片')
+      .command(`${this.config.commandName} [...tags:string]`, '获取随机图片')
       .usage(
         `从各个图源中随机获取一张随机图片。图源可以用 ${this.config.commandName}.sources 查询。参数均为可选。`,
       )
@@ -224,15 +224,16 @@ export default class PicsContainer
         'source',
         `-s <source:string>  指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
       )
-      .option('tag', '-t <tag:string>  需要查询的图片标签，逗号分隔。')
+      // .option('tag', '-t <tag:string>  需要查询的图片标签，逗号分隔。')
       .example(
-        `${this.config.commandName} -s yande -t yuyuko  从 yande 图源中获取一张具有 yuyuko 标签的图。`,
+        `${this.config.commandName} yuyuko -s yande  从 yande 图源中获取一张具有 yuyuko 标签的图。`,
       )
-      .action(async (argv) => {
+      .action(async (argv, ...picTags) => {
         const sourceTags = argv.options.source
-          ? argv.options.source.split(',')
+          ? argv.options.source.split(/[,+\uFF0C\uFF0B\u3001]/)
           : [];
-        const picTags = argv.options.tag ? argv.options.tag.split(',') : [];
+        // const picTags = argv.options.tag ? argv.options.tag.split(',') : [];
+        picTags ||= [];
         const result = await this.randomPic(picTags, sourceTags);
         if (!result) {
           return argv.session.text('.not-found');
@@ -253,17 +254,18 @@ export default class PicsContainer
         }
         return msg;
       })
-      .subcommand('.sources', '查询图源列表')
-      .option('source', '-s <source:string>  要查询的图源标签，逗号分隔。')
+      .subcommand('.sources [...tags:string]', '查询图源列表')
+      // .option('source', '-s <source:string>  要查询的图源标签，逗号分隔。')
       .usage('图源标签可用于图片获取的图源筛选。')
       .example(`${this.config.commandName}.sources 查询全部的图源`)
       .example(
         `${this.config.commandName} -s pixiv 查询含有 pixiv 标签的图源。`,
       )
-      .action(async (argv) => {
-        const sourceTags = argv.options.source
-          ? argv.options.source.split(',')
-          : [];
+      .action(async (argv, ...sourceTags) => {
+        //const sourceTags = argv.options.source
+        //  ? argv.options.source.split(',')
+        //  : [];
+        sourceTags ||= [];
         const sources = this.pickAvailableSources(sourceTags, true);
         return `${argv.session.text('.list')}\n${sources
           .map((s) => s.getDisplayString())
