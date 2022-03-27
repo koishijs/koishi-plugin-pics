@@ -216,12 +216,17 @@ export default class PicsContainer
         'source',
         `-s <source:string>  指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
       )
+      .example(`${this.config.commandName} 获取一张随机图片。`)
+      .example(`${this.config.commandName} yuyuko 获取一张 yuyuko 标签的图片。`)
       .example(
-        `${this.config.commandName} yuyuko -s yande  从 yande 图源中获取一张具有 yuyuko 标签的图。`,
+        `${this.config.commandName} -s yande 获取一张 yande 图源的图片。`,
+      )
+      .example(
+        `${this.config.commandName} -s yande yuyuko saigyouji 从 yande 图源中获取一张具有 yuyuko 以及 saigyouji 标签的图。`,
       )
       .action(async (argv, ...picTags) => {
         const sourceTags = argv.options.source
-          ? argv.options.source.split(/[,+\uFF0C\uFF0B\u3001]/)
+          ? argv.options.source.split(/[ ,+\uFF0C\uFF0B\u3001]/)
           : [];
         picTags ||= [];
         const result = await this.randomPic(picTags, sourceTags);
@@ -247,10 +252,8 @@ export default class PicsContainer
       .subcommand('.sources [...tags:string]', '查询图源列表')
       // .option('source', '-s <source:string>  要查询的图源标签，逗号分隔。')
       .usage('图源标签可用于图片获取的图源筛选。')
-      .example(`${this.config.commandName}.sources 查询全部的图源`)
-      .example(
-        `${this.config.commandName} -s pixiv 查询含有 pixiv 标签的图源。`,
-      )
+      .example(`${this.config.commandName}.sources 查询全部的图源。`)
+      .example(`${this.config.commandName} pixiv 查询含有 pixiv 标签的图源。`)
       .action(async (argv, ...sourceTags) => {
         sourceTags ||= [];
         const sources = this.pickAvailableSources(sourceTags, true);
