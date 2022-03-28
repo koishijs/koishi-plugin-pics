@@ -24,7 +24,7 @@ export interface PicSourceInfo {
 }
 
 export class PicSourceConfig implements PicSourceInfo {
-  constructor(config: PicSourceInfo) {}
+  constructor(config: Partial<PicSourceInfo>) {}
 
   @DefineSchema({ type: 'string', default: [], description: '图源标签' })
   tags: string[];
