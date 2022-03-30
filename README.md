@@ -6,13 +6,13 @@ Koishi 的随机图片插件
 
 你可以选择通过 koishi 的插件市场安装本插件，也可以使用 npm 或 yarn 等包管理器安装。
 
-### 插件市场
+### 通过插件市场
 
 如果你通过 koishi 的[模板项目](https://koishi.js.org/guide/introduction/template.html)创建了你的机器人项目，你可以直接从插件市场安装本插件。详情请参考[安装和配置插件](https://koishi.js.org/guide/introduction/template.html#%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE%E6%8F%92%E4%BB%B6)
 
-### 包管理器
+### 通过包管理器
 
-推荐使用 yarn 安装插件，当然，也可以使用 npm 安装。
+由于 koishi 现在的默认包管理器是 yarn，因此推荐使用 yarn 安装插件，当然，你也可以使用 npm 安装。
 
 ```bash
 # 如果你使用 yarn
@@ -21,7 +21,7 @@ yarn add koishi-plugin-pics
 npm install koishi-plugin-pics
 ```
 
-## 快速开始
+## 开始使用
 
 由于 pics 仅仅是一个随机图片的插件框架，你必须添加至少一个图源插件才能使用。此处以 [koishi-plugin-picsource-lolicon](https://npmjs.com/package/koishi-plugin-picsource-lolicon) 和 [koishi-plugin-picsource-yande](https://npmjs.com/package/koishi-plugin-picsource-yande) 为例，你可以在插件市场搜索相应的名字或者使用 yarn 直接安装。
 
@@ -33,8 +33,6 @@ plugins:
   pics:
     commandName: pic
   picsource-lolicon: # Lolicon 图源
-    $install: true
-    $community: true
     name: lolicon
     r18: 2
     tags:
@@ -45,8 +43,6 @@ plugins:
     isDefault: true
     weight: 2
   picsource-yande: # Yande 图源插件
-    $install: true
-    $community: true
     instances:
       - name: yande # Yande 图源
         tags:
@@ -80,8 +76,9 @@ plugins:
 
 ### 获取随机图片
 
-```
+```text
 pic
+
 获取随机图片
 从各个图源中随机获取一张随机图片。图源可以用 pic.sources 查询。参数均为可选。
 可用的选项有：
@@ -95,7 +92,7 @@ pic.sources 查询图源列表
 
 ### 查询图源列表
 
-```
+```text
 pic.sources
 查询图源列表
 图源标签可用于图片获取的图源筛选。
@@ -122,7 +119,6 @@ koishi-plugin-pics 的配置如下表所示：
 |weight|number|否|图源权重，越大优先级越高|
 |description|string|否|图源的描述|
 |isDefault|boolean|否|是否默认图源，若设置为 false 或不设置，则需要通过 `-s` 选项指定图源才能调用|
-
 
 ```yaml
 plugins:
@@ -209,6 +205,7 @@ export default class SomePlugin {
   }
 }
 ```
+
 ## 贡献代码
 
 如果你想要向本插件贡献代码，或开发新的图源插件，请参阅 [CONTRIBUTING.md](./CONTRIBUTING.md)。
