@@ -209,3 +209,7 @@ export default class SomePlugin {
 ## 贡献代码
 
 如果你想要向本插件贡献代码，或开发新的图源插件，请参阅 [CONTRIBUTING.md](./CONTRIBUTING.md)。
+
+## 许可证
+
+本项目源码以 [MIT 协议](./LICENSE) 授权。
