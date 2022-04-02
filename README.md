@@ -77,15 +77,16 @@ plugins:
 ### 获取随机图片
 
 ```text
-pic
-
+pic [...tags:string]
 获取随机图片
 从各个图源中随机获取一张随机图片。图源可以用 pic.sources 查询。参数均为可选。
 可用的选项有：
--s, --source <source> 指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。
 -t, --tag <tag> 需要查询的图片标签，逗号分隔。
 使用示例：
-pic -s pixiv -t yuyuko 从 pixiv 图源中获取一张具有 yuyuko 标签的图。
+pic 获取一张随机图片。
+pic yuyuko 获取一张 yuyuko 标签的图片。
+pic -s yande 获取一张 yande 图源的图片。
+pic -s yande yuyuko saigyouji 从 yande 图源中获取一张具有 yuyuko 以及 saigyouji 标签的图。
 可用的子指令有：
 pic.sources 查询图源列表
 ```
@@ -96,10 +97,10 @@ pic.sources 查询图源列表
 pic.sources
 查询图源列表
 图源标签可用于图片获取的图源筛选。
-可用的选项有：
--s, --source <source> 要查询的图源标签，逗号分隔。
+
 使用示例：
-pic.sources 查询全部的图源。 pic -s pixiv 查询含有 pixiv 标签的图源。
+pic.sources 查询全部的图源。
+pic pixiv 查询含有 pixiv 标签的图源。
 ```
 
 ## 配置

@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-pics",
   "description": "Koishi 的随机图片插件",
-  "version": "8.6.10",
+  "version": "8.7.3",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
@@ -29,13 +29,13 @@
   },
   "homepage": "https://github.com/koishijs/koishi-plugin-pics",
   "dependencies": {
-    "koishi-thirdeye": "^9.2.14",
+    "koishi-thirdeye": "^9.2.18",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@koishijs/plugin-cache-lru": "^1.0.0-rc.0",
-    "@koishijs/plugin-console": "^3.1.2",
-    "@koishijs/plugin-database-memory": "^1.0.2",
+    "@koishijs/plugin-console": "^3.2.4",
+    "@koishijs/plugin-database-memory": "^1.1.0",
     "@koishijs/plugin-sandbox": "^1.0.2",
     "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.176",
@@ -57,7 +57,7 @@
     "ws": "^8.3.0"
   },
   "peerDependencies": {
-    "koishi": "^4.4.2"
+    "koishi": "^4.5.0"
   },
   "jest": {
     "moduleFileExtensions": [
