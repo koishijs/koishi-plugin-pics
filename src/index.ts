@@ -253,7 +253,7 @@ export default class PicsContainer
       // .option('source', '-s <source:string>  要查询的图源标签，逗号分隔。')
       .usage('图源标签可用于图片获取的图源筛选。')
       .example(`${this.config.commandName}.sources 查询全部的图源。`)
-      .example(`${this.config.commandName} pixiv 查询含有 pixiv 标签的图源。`)
+      .example(`${this.config.commandName}.sources pixiv 查询含有 pixiv 标签的图源。`)
       .action(async (argv, ...sourceTags) => {
         sourceTags ||= [];
         const sources = this.pickAvailableSources(sourceTags, true);
