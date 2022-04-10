@@ -180,6 +180,14 @@ export default class PicsContainer
     return this.fetchPicsWithSources(sources, picTags);
   }
 
+  isOneBotBot(bot?: Bot) {
+    return (
+      bot &&
+      (bot.platform === 'onebot' ||
+        (bot.platform === 'qqguild' && bot['parentBot']?.platform === 'onebot'))
+    );
+  }
+
   async getSegment(url: string, bot?: Bot) {
     try {
       if (this.config.useAssets && this.assets) {
@@ -194,13 +202,9 @@ export default class PicsContainer
     } catch (e) {
       this.logger.warn(`Download image ${url} failed: ${e.toString()}`);
     }
-    const isOnebot =
-      bot &&
-      (bot.platform === 'onebot' ||
-        (bot.platform === 'qqguild' &&
-          bot['parentBot']?.platform === 'onebot'));
+    const isOneBotBot = this.isOneBotBot(bot);
     const picData: segment.Data = {
-      [isOnebot ? 'file' : 'url']: url,
+      [isOneBotBot ? 'file' : 'url']: url,
       cache: true,
     };
     return segment('image', picData);
