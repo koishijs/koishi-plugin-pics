@@ -189,6 +189,7 @@ export default class PicsContainer
   }
 
   async getSegment(url: string, bot?: Bot) {
+    let useFileHeader = false;
     try {
       if (this.config.useAssets && this.assets) {
         const uploadedUrl = await this.assets.upload(
@@ -201,13 +202,14 @@ export default class PicsContainer
           responseType: 'arraybuffer',
         });
         url = `base64://${buf.toString('base64')}`;
+        useFileHeader = true;
       }
     } catch (e) {
       this.logger.warn(`Download image ${url} failed: ${e.toString()}`);
     }
     const isOneBotBot = this.isOneBotBot(bot);
     const picData: segment.Data = {
-      [isOneBotBot ? 'file' : 'url']: url,
+      [isOneBotBot && useFileHeader ? 'file' : 'url']: url,
       cache: true,
     };
     return segment('image', picData);
