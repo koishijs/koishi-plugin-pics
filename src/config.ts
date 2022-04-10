@@ -1,5 +1,6 @@
 // import 'source-map-support/register';
 import { DefineSchema, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
+import { Quester } from 'koishi';
 
 @RegisterSchema()
 export class PicsPluginConfig {
@@ -7,8 +8,17 @@ export class PicsPluginConfig {
   @DefineSchema({ description: '指令名', default: 'pic', hidden: true })
   commandName: string;
 
-  @DefineSchema({ description: '保留 URL 中的文件名。', default: false })
-  preseveFilename: boolean;
+  @DefineSchema({
+    description: 'Assets 服务可用时，使用 Assets 缓存图片。',
+    default: true,
+  })
+  useAssets: boolean;
+
+  @DefineSchema({ description: '使用 Base64 发送图片结果。', default: false })
+  useBase64: boolean;
+
+  @DefineSchema({ type: Quester.createSchema(), default: {} })
+  httpConfig: Quester.Config;
 }
 
 export type PicsPluginConfigLike = Partial<PicsPluginConfig>;
