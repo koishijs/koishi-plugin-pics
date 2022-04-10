@@ -191,7 +191,10 @@ export default class PicsContainer
   async getSegment(url: string, bot?: Bot) {
     try {
       if (this.config.useAssets && this.assets) {
-        const uploadedUrl = await this.assets.upload(url, url.split('/').pop());
+        const uploadedUrl = await this.assets.upload(
+          url,
+          decodeURIComponent(url.split('/').pop()),
+        );
         url = uploadedUrl;
       } else if (this.config.useBase64) {
         const buf = await this._http.get(url, {
