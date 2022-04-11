@@ -192,10 +192,7 @@ export default class PicsContainer
     let useFileHeader = false;
     try {
       if (this.config.useAssets && this.assets) {
-        const uploadedUrl = await this.assets.upload(
-          url,
-          decodeURIComponent(url.split('/').pop()),
-        );
+        const uploadedUrl = await this.assets.upload(url, undefined);
         url = uploadedUrl;
       } else if (this.config.useBase64) {
         const buf = await this._http.get(url, {
