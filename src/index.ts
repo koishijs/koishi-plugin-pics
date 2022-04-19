@@ -1,8 +1,8 @@
 // import 'source-map-support/register';
-import { Context, Assets, Awaitable, Random, Logger } from 'koishi';
+import { Context, Assets, Awaitable, Random, Logger, Bot } from 'koishi';
 import { PicSourceInfo, PicsPluginConfig } from './config';
 import _ from 'lodash';
-import { segment } from 'koishi';
+import { segment, Quester } from 'koishi';
 import {
   BasePlugin,
   Caller,
@@ -74,6 +74,11 @@ export default class PicsContainer
 
   @Inject()
   private assets: Assets;
+
+  @Inject(true)
+  private http: Quester;
+
+  private _http: Quester;
 
   addSource(source: PicSource, targetCtx?: Context) {
     const processingCtx: Context = targetCtx || this.caller;
@@ -175,13 +180,47 @@ export default class PicsContainer
     return this.fetchPicsWithSources(sources, picTags);
   }
 
+  isOneBotBot(bot?: Bot) {
+    return (
+      bot &&
+      (bot.platform === 'onebot' ||
+        (bot.platform === 'qqguild' && bot['parentBot']?.platform === 'onebot'))
+    );
+  }
+
+  async getSegment(url: string, bot?: Bot) {
+    let useFileHeader = false;
+    try {
+      if (this.config.useAssets && this.assets) {
+        const uploadedUrl = await this.assets.upload(url, undefined);
+        url = uploadedUrl;
+      } else if (this.config.useBase64) {
+        const buf = await this._http.get(url, {
+          responseType: 'arraybuffer',
+        });
+        url = `base64://${buf.toString('base64')}`;
+        useFileHeader = true;
+      }
+    } catch (e) {
+      this.logger.warn(`Download image ${url} failed: ${e.toString()}`);
+    }
+    const isOneBotBot = this.isOneBotBot(bot);
+    const picData: segment.Data = {
+      [isOneBotBot && useFileHeader ? 'file' : 'url']: url,
+      cache: true,
+    };
+    return segment('image', picData);
+  }
+
   async onApply() {
+    this._http = this.http.extend(this.config.httpConfig);
     const ctx = this.ctx;
     ctx.i18n.define('zh', `commands.${this.config.commandName}`, {
       description: '获取随机图片',
       options: {
         source: `指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
       },
+      usage: `从各个图源中随机获取一张随机图片。图源可以用 ${this.config.commandName}.sources 查询。参数均为可选。`,
       messages: {
         'not-found': '未找到任何图片。',
       },
@@ -189,6 +228,7 @@ export default class PicsContainer
     ctx.i18n.define('en', `commands.${this.config.commandName}`, {
       description: 'Get random picture',
       options: {},
+      usage: `Get a random picture from a random sourse. Sources can be queried with command ${this.config.commandName}.sources`,
       messages: {
         'not-found': 'No pictures found.',
       },
@@ -196,6 +236,7 @@ export default class PicsContainer
     ctx.i18n.define('zh', `commands.${this.config.commandName}.sources`, {
       description: '查询图源列表',
       options: {},
+      usage: '图源标签可用于图片获取的图源筛选。',
       messages: {
         list: '图源的列表如下:',
       },
@@ -203,27 +244,18 @@ export default class PicsContainer
     ctx.i18n.define('en', `commands.${this.config.commandName}.sources`, {
       description: 'Query picture sources',
       options: {},
+      usage: 'Source tags can be used to filter picture sources.',
       messages: {
         list: 'List of sources:',
       },
     });
     ctx
-      .command(`${this.config.commandName} [...tags:string]`, '获取随机图片')
-      .usage(
-        `从各个图源中随机获取一张随机图片。图源可以用 ${this.config.commandName}.sources 查询。参数均为可选。`,
-      )
-      .option(
-        'source',
-        `-s <source:string>  指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
-      )
-      .example(`${this.config.commandName} 获取一张随机图片。`)
-      .example(`${this.config.commandName} yuyuko 获取一张 yuyuko 标签的图片。`)
-      .example(
-        `${this.config.commandName} -s yande 获取一张 yande 图源的图片。`,
-      )
-      .example(
-        `${this.config.commandName} -s yande yuyuko saigyouji 从 yande 图源中获取一张具有 yuyuko 以及 saigyouji 标签的图。`,
-      )
+      .command(`${this.config.commandName} [...tags:string]`)
+      .option('source', `-s <source:string>`)
+      .example(`${this.config.commandName}`)
+      .example(`${this.config.commandName} yuyuko`)
+      .example(`${this.config.commandName} -s yande`)
+      .example(`${this.config.commandName} -s yande yuyuko saigyouji`)
       .action(async (argv, ...picTags) => {
         const sourceTags = argv.options.source
           ? argv.options.source.split(/[ ,+\uFF0C\uFF0B\u3001]/)
@@ -233,27 +265,16 @@ export default class PicsContainer
         if (!result) {
           return argv.session.text('.not-found');
         }
-        const picData: segment.Data = {
-          url: result.url,
-          cache: true,
-        };
-        if (this.config.preseveFilename) {
-          picData.file = result.url.split('/').pop();
-        }
-        let msg = segment('image', picData);
+
+        let msg = await this.getSegment(result.url, argv.session.bot);
         if (result.description) {
           msg += `\n${result.description}`;
         }
-        if (this.assets) {
-          msg = await this.assets.transform(msg);
-        }
         return msg;
       })
-      .subcommand('.sources [...tags:string]', '查询图源列表')
-      // .option('source', '-s <source:string>  要查询的图源标签，逗号分隔。')
-      .usage('图源标签可用于图片获取的图源筛选。')
-      .example(`${this.config.commandName}.sources 查询全部的图源。`)
-      .example(`${this.config.commandName}.sources pixiv 查询含有 pixiv 标签的图源。`)
+      .subcommand('.sources [...tags:string]')
+      .example(`${this.config.commandName}.sources`)
+      .example(`${this.config.commandName}.sources pixiv`)
       .action(async (argv, ...sourceTags) => {
         sourceTags ||= [];
         const sources = this.pickAvailableSources(sourceTags, true);

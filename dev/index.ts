@@ -27,6 +27,6 @@ app.plugin(DatabasePlugin);
 app.plugin(ExtrasInDev);
 
 // Target plugin
-app.plugin(TargetPlugin, {} as any);
+app.plugin(TargetPlugin, { useBase64: true });
 
 app.start();
