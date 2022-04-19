@@ -1,18 +1,16 @@
-## 图源
+# 贡献代码
+
+如果你对本插件有任何的意见建议，欢迎开启 issue 进行说明，或者你也可以直接贡献代码。
+
+由于 pics 设计为可插拔式的框架，当前仓库仅实现了发送图片的功能，而获取图源的能力则完全由其他插件所实现（下称图源插件）。因此你可以选择向 pics（即本仓库）贡献代码，也可以开发新的图源插件，或向现有的图源插件贡献代码。
+
+# 向当前仓库贡献代码
+
+本仓库采用了 [koishi-thirdeye](https://koishi.js.org/about/decorator) 进行开发，思路与理念与传统的 koishi 插件并不相同，在贡献代码之前请先了解双方的异同。
+
+# 开发图源插件
 
 图源由其他 Koishi 插件提供。这些插件需要实现 `PicSource` 类，并使用 `ctx.pics.addSource(picSource, ctx)` 进行注入。
-
-### 图源插件
-
-下面是一些开箱即用的图源。如果你希望你编写的图源插件在此处列出，欢迎提交 Pull Request 或发邮件给 `nanahira@momobako.com` 。
-
-* [`koishi-plugin-picsource-localfs`](https://github.com/koishijs/koishi-plugin-picsource-localfs) 本地文件图源。
-
-* [`koishi-plugin-picsource-lolicon`](https://github.com/koishijs/koishi-plugin-picsource-lolicon) [Lolicon](https://api.lolicon.app/ ) 图源。
-
-* [`koishi-plugin-picsource-heisi`](https://code.mycard.moe/3rdeye/koishi-plugin-picsource-heisi) 黑丝图源。
-
-* [`koishi-plugin-picsource-yande`](https://code.mycard.moe/3rdeye/koishi-plugin-picsource-yande) [Yande](https://yande.re/) 以及 [Konachan](https://konachan.com) 图源。
 
 ### 类定义
 
