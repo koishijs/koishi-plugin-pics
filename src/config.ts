@@ -1,6 +1,7 @@
 // import 'source-map-support/register';
 import { DefineSchema, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
 import { Quester } from 'koishi';
+import { PicMiddleware } from './index';
 
 @RegisterSchema()
 export class PicsPluginConfig {
@@ -58,3 +59,19 @@ export class PicSourceConfig implements PicSourceInfo {
 }
 
 export const PicSourceSchema = SchemaClass(PicSourceConfig);
+
+export interface PicMiddlewareInfo {
+  name?: string;
+  prepend?: boolean;
+}
+
+export class PicMiddlewareConfig {
+  constructor(config: PicMiddlewareInfo) {}
+  name: string;
+  prepend: boolean;
+
+  applyTo(target: PicMiddleware) {
+    target.name = this.name;
+    target.prepend = this.prepend;
+  }
+}

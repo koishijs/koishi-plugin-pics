@@ -1,18 +1,37 @@
 // import 'source-map-support/register';
-import { Context, Assets, Awaitable, Random, Logger, Bot } from 'koishi';
-import { PicSourceInfo, PicsPluginConfig } from './config';
+import {
+  Context,
+  Assets,
+  Awaitable,
+  Random,
+  Logger,
+  Bot,
+  remove,
+} from 'koishi';
+import {
+  PicMiddlewareConfig,
+  PicMiddlewareInfo,
+  PicSourceInfo,
+  PicsPluginConfig,
+} from './config';
 import _ from 'lodash';
 import { segment, Quester } from 'koishi';
 import {
   BasePlugin,
   Caller,
+  ClassType,
   DefinePlugin,
   Inject,
   InjectLogger,
   LifecycleEvents,
   Provide,
 } from 'koishi-thirdeye';
+import { AxiosRequestConfig } from 'axios';
+import { PicAssetsTransformMiddleware } from './middlewares/assets';
+import { PicDownloaderMiddleware } from './middlewares/download';
+import { PicMiddleware, PicNext } from './middleware';
 export * from './config';
+export * from './middleware';
 
 declare module 'koishi' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -65,15 +84,13 @@ export default class PicsContainer
   implements LifecycleEvents
 {
   private sources = new Map<PicSource, () => boolean>();
+  private picMiddlewares: PicMiddleware[] = [];
 
   @Caller()
   private caller: Context;
 
   @InjectLogger()
   private logger: Logger;
-
-  @Inject()
-  private assets: Assets;
 
   @Inject(true)
   private http: Quester;
@@ -106,6 +123,24 @@ export default class PicsContainer
 
   private allSources() {
     return Array.from(this.sources.keys());
+  }
+
+  middleware(mid: PicMiddleware, targetCtx?: Context) {
+    const processingCtx: Context = targetCtx || this.caller;
+    mid.name ||= processingCtx.state?.plugin?.name;
+    const disposable = processingCtx.on('dispose', () => {
+      disposable();
+      this.removeMiddlware(mid);
+    });
+    if (mid.prepend) {
+      this.picMiddlewares.unshift(mid);
+    } else {
+      this.picMiddlewares.push(mid);
+    }
+  }
+
+  removeMiddlware(mid: PicMiddleware) {
+    remove(this.picMiddlewares, mid);
   }
 
   pickAvailableSources(sourceTags: string[] = [], includeNonDefault = false) {
@@ -188,32 +223,63 @@ export default class PicsContainer
     );
   }
 
-  async getSegment(url: string, bot?: Bot) {
-    let useFileHeader = false;
-    try {
-      if (this.config.useAssets && this.assets) {
-        const uploadedUrl = await this.assets.upload(url, undefined);
-        url = uploadedUrl;
-      } else if (this.config.useBase64 && url.startsWith('http')) {
-        const buf = await this._http.get(url, {
-          responseType: 'arraybuffer',
-        });
-        url = `base64://${buf.toString('base64')}`;
-        useFileHeader = true;
-      }
-    } catch (e) {
-      this.logger.warn(`Download image ${url} failed: ${e.toString()}`);
+  async download(url: string, extraConfig: AxiosRequestConfig = {}) {
+    if (url.startsWith('base64://')) {
+      return url;
     }
-    const isOneBotBot = this.isOneBotBot(bot);
+    const buf = await this._http.get(url, {
+      responseType: 'arraybuffer',
+      ...extraConfig,
+    });
+    return `base64://${buf.toString('base64')}`;
+  }
+
+  async resolveUrl(url: string, middlwares = this.picMiddlewares) {
+    if (!middlwares.length) {
+      return url;
+    }
+    const next: PicNext = async (nextUrl) => {
+      nextUrl ||= url;
+      const nextResult = await this.resolveUrl(nextUrl, middlwares.slice(1));
+      return nextResult || nextUrl;
+    };
+    try {
+      let result = await middlwares[0].use(url, next);
+      if (!result) {
+        this.logger.warn(
+          `Got empty result from middleware ${middlwares[0].name || '???'}`,
+        );
+        result = url;
+      }
+      return result;
+    } catch (e) {
+      this.logger.warn(`Resolve url ${url} failed: ${e.toString()}`);
+      return url;
+    }
+  }
+
+  async getSegment(url: string, bot?: Bot) {
+    url = await this.resolveUrl(url);
     const picData: segment.Data = {
-      [isOneBotBot && useFileHeader ? 'file' : 'url']: url,
+      [url.startsWith('base64://') && this.isOneBotBot(bot) ? 'file' : 'url']:
+        url,
       cache: true,
     };
     return segment('image', picData);
   }
 
-  async onApply() {
+  private installDefaultMiddlewares() {
+    if (this.config.useAssets) {
+      this.ctx.plugin(PicAssetsTransformMiddleware);
+    }
+    if (this.config.useBase64) {
+      this.ctx.plugin(PicDownloaderMiddleware);
+    }
+  }
+
+  onApply() {
     this._http = this.http.extend(this.config.httpConfig);
+    this.installDefaultMiddlewares();
     const ctx = this.ctx;
     ctx.i18n.define('zh', `commands.${this.config.commandName}`, {
       description: '获取随机图片',
