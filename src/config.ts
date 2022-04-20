@@ -1,24 +1,24 @@
 // import 'source-map-support/register';
-import { DefineSchema, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
+import { SchemaProperty, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
 import { Quester } from 'koishi';
 import { PicMiddleware } from './index';
 
 @RegisterSchema()
 export class PicsPluginConfig {
   constructor(config: Partial<PicsPluginConfig>) {}
-  @DefineSchema({ description: '指令名', default: 'pic', hidden: true })
+  @SchemaProperty({ description: '指令名', default: 'pic', hidden: true })
   commandName: string;
 
-  @DefineSchema({
+  @SchemaProperty({
     description: 'Assets 服务可用时，使用 Assets 缓存图片。',
     default: true,
   })
   useAssets: boolean;
 
-  @DefineSchema({ description: '使用 Base64 发送图片结果。', default: false })
+  @SchemaProperty({ description: '使用 Base64 发送图片结果。', default: false })
   useBase64: boolean;
 
-  @DefineSchema({ type: Quester.createSchema(), default: {} })
+  @SchemaProperty({ type: Quester.createSchema(), default: {} })
   httpConfig: Quester.Config;
 }
 
@@ -37,15 +37,15 @@ export interface PicSourceInfo {
 export class PicSourceConfig implements PicSourceInfo {
   constructor(config: Partial<PicSourceInfo>) {}
 
-  @DefineSchema({ type: 'string', default: [], description: '图源标签' })
+  @SchemaProperty({ type: 'string', default: [], description: '图源标签' })
   tags: string[];
-  @DefineSchema({ default: 1, description: '图源权重' })
+  @SchemaProperty({ default: 1, description: '图源权重' })
   weight: number;
-  @DefineSchema({ default: 1, description: '图源名称', required: true })
+  @SchemaProperty({ default: 1, description: '图源名称', required: true })
   name: string;
-  @DefineSchema({ description: '图源描述' })
+  @SchemaProperty({ description: '图源描述' })
   description?: string;
-  @DefineSchema({ description: '是否为默认图源' })
+  @SchemaProperty({ description: '是否为默认图源' })
   isDefault?: boolean;
 
   // 给目标对象注入上述对象。
@@ -67,7 +67,9 @@ export interface PicMiddlewareInfo {
 
 export class PicMiddlewareConfig {
   constructor(config: PicMiddlewareInfo) {}
+  @SchemaProperty({ description: '中间件名称。' })
   name: string;
+  @SchemaProperty({ description: '是否在首位插入中间件。', default: false })
   prepend: boolean;
 
   applyTo(target: PicMiddleware) {

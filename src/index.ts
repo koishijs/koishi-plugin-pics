@@ -223,15 +223,26 @@ export default class PicsContainer
     );
   }
 
+  async urlToBuffer(url: string, extraConfig: AxiosRequestConfig = {}) {
+    if (url.startsWith('base64://')) {
+      return Buffer.from(url.slice(9), 'base64');
+    }
+    return this._http.get<Buffer>(url, {
+      responseType: 'arraybuffer',
+      ...extraConfig,
+    });
+  }
+
+  bufferToUrl(buffer: Buffer) {
+    return `base64://${buffer.toString('base64')}`;
+  }
+
   async download(url: string, extraConfig: AxiosRequestConfig = {}) {
     if (url.startsWith('base64://')) {
       return url;
     }
-    const buf = await this._http.get(url, {
-      responseType: 'arraybuffer',
-      ...extraConfig,
-    });
-    return `base64://${buf.toString('base64')}`;
+    const buffer = await this.urlToBuffer(url, extraConfig);
+    return this.bufferToUrl(buffer);
   }
 
   async resolveUrl(url: string, middlwares = this.picMiddlewares) {
