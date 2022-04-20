@@ -194,7 +194,7 @@ export default class PicsContainer
       if (this.config.useAssets && this.assets) {
         const uploadedUrl = await this.assets.upload(url, undefined);
         url = uploadedUrl;
-      } else if (this.config.useBase64) {
+      } else if (this.config.useBase64 && url.startsWith('http')) {
         const buf = await this._http.get(url, {
           responseType: 'arraybuffer',
         });
