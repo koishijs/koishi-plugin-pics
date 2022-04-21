@@ -245,20 +245,20 @@ export default class PicsContainer
     return this.bufferToUrl(buffer);
   }
 
-  async resolveUrl(url: string, middlwares = this.picMiddlewares) {
-    if (!middlwares.length) {
+  async resolveUrl(url: string, middlewares = this.picMiddlewares) {
+    if (!middlewares.length) {
       return url;
     }
     const next: PicNext = async (nextUrl) => {
       nextUrl ||= url;
-      const nextResult = await this.resolveUrl(nextUrl, middlwares.slice(1));
+      const nextResult = await this.resolveUrl(nextUrl, middlewares.slice(1));
       return nextResult || nextUrl;
     };
     try {
-      let result = await middlwares[0].use(url, next);
+      let result = await middlewares[0].use(url, next);
       if (!result) {
         this.logger.warn(
-          `Got empty result from middleware ${middlwares[0].name || '???'}`,
+          `Got empty result from middleware ${middlewares[0].name || '???'}`,
         );
         result = url;
       }

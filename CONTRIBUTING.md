@@ -200,10 +200,15 @@ export class PicSourceConfig {
 
 和图源类似，图像中间件是 `koishi-plugin-pics` 的另一类附属插件，可以对图源获取的随机 URL 在发送给用户之前进行一定的变换。
 
+### 图像中间件系统
+
+图像中间件系统使用洋葱模型的方式进行处理。每一层处理的过程中，可以使用 `next(url?: string)` 函数进行后续的操作，并得到后续结果的返回值，再进行进一步的处理。
+
+`next` 函数中的 `url` 参数可以对进行后续操作的初始 URL 值进行控制。若不填写，则与本中间件的传入 URL 值相同。
+
 ### 开发图像中间件插件
 
 图像中间件插件需要使用 [koishi-thirdeye](https://koishi.js.org/about/decorator) 进行开发。请在开发之前阅读相关相关文档。推荐在 `package.json` 的 `keywords` 内写上 `required:pics` 以保证正确被 Koishi 插件市场搜索。
-
 
 #### 插件基类
 
