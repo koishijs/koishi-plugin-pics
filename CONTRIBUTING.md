@@ -4,13 +4,13 @@
 
 由于 pics 设计为可插拔式的框架，当前仓库仅实现了发送图片的功能，而获取图源的能力则完全由其他插件所实现（下称图源插件）。因此你可以选择向 pics（即本仓库）贡献代码，也可以开发新的图源插件，或向现有的图源插件贡献代码。
 
-# 向当前仓库贡献代码
+## 向当前仓库贡献代码
 
 本仓库采用了 [koishi-thirdeye](https://koishi.js.org/about/decorator) 进行开发，思路与理念与传统的 koishi 插件并不相同，在贡献代码之前请先了解双方的异同。
 
-# 开发图源插件
+## 图源插件
 
-图源由其他 Koishi 插件提供。这些插件需要实现 `PicSource` 类，并使用 `ctx.pics.addSource(picSource, ctx)` 进行注入。
+图源是一类 `koishi-plugin-pics` 的附属插件，由其他 Koishi 插件提供。这些插件需要实现 `PicSource` 类，并使用 `ctx.pics.addSource(picSource, ctx)` 进行注入。
 
 ### 类定义
 
@@ -109,7 +109,7 @@ export class Config {
 }
 
 
-export default class MyPicSourceInstance extends PicSource {
+export class MyPicSourceInstance extends PicSource {
   constructor(ctx: Context, config: Partial<Config>) {
     super(ctx);
     config.applyTo(this);
@@ -192,6 +192,63 @@ export class PicSourceConfig {
     target.name ||= this.name;
     target.description ||= this.description;
     target.isDefault = this.isDefault;
+  }
+}
+```
+
+## 图像中间件
+
+和图源类似，图像中间件是 `koishi-plugin-pics` 的另一类附属插件，可以对图源获取的随机 URL 在发送给用户之前进行一定的变换。
+
+### 开发图像中间件插件
+
+图像中间件插件需要使用 [koishi-thirdeye](https://koishi.js.org/about/decorator) 进行开发。请在开发之前阅读相关相关文档。推荐在 `package.json` 的 `keywords` 内写上 `required:pics` 以保证正确被 Koishi 插件市场搜索。
+
+
+#### 插件基类
+
+图源中间件插件需要继承 `PicMiddlewareBase<Config>` 类，覆盖 `use` 方法，并使用 `@DefinePlugin({ schema: Config })` 进行注解。
+
+该基类具有这些预定义属性，可以直接使用。
+
+* `pics`: `koishi-plugin-pics` 服务本身，并已标记为 `using` 依赖。
+
+* `logger`: 日志记录器。
+
+#### 配置基类
+
+配置基类定义如下。插件配置 Schema 类需要从该类进行继承，并添加自身所需要的属性。若无多余配置，则可以直接使用 `PicMiddlewareConfig` 类作为配置类。
+
+```ts
+export class PicMiddlewareConfig {
+  constructor(config: PicMiddlewareInfo) {}
+  @SchemaProperty({ description: '中间件名称。' })
+  name: string;
+  @SchemaProperty({ description: '是否在首位插入中间件。', default: false })
+  prepend: boolean;
+
+  applyTo(target: PicMiddleware) {
+    target.name = this.name;
+    target.prepend = this.prepend;
+  }
+}
+```
+
+### 插件示例
+
+下例图像中间件插件会将所有 URL 进行预先下载，并使用 `download` 方法转换为 `base64://` 形式的 URL，即为 `koishi-plugin-pics` 中 `useBase64` 选项的功能。事实上，`koishi-plugin-pics` 中的 `useAssets` 和 `useBase64` 这两个选项的功能，都是由内置图像中间件实现的。
+
+```ts
+export class Config {
+  @SchemaProperty({ type: Schema.object() })
+  axiosConfig: AxiosRequestConfig;
+}
+
+@DefinePlugin({ schema: Config })
+export default class PicDownloaderMiddleware extends PicMiddlewareBase<Config> {
+  override async use(url: string, next: PicNext) {
+    const downloadedUrl = await this.pics.download(url, config.axiosConfig);
+    return next(downloadedUrl);
   }
 }
 ```
