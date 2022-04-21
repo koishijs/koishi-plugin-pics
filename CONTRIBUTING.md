@@ -244,7 +244,7 @@ export class PicMiddlewareConfig {
 下例图像中间件插件会将所有 URL 进行预先下载，并使用 `download` 方法转换为 `base64://` 形式的 URL，即为 `koishi-plugin-pics` 中 `useBase64` 选项的功能。事实上，`koishi-plugin-pics` 中的 `useAssets` 和 `useBase64` 这两个选项的功能，都是由内置图像中间件实现的。
 
 ```ts
-export class Config {
+export class Config extends PicMiddlewareConfig {
   @SchemaProperty({ type: Schema.object() })
   axiosConfig: AxiosRequestConfig;
 }
