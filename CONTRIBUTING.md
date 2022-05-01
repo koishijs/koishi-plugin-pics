@@ -52,6 +52,8 @@ export class PicSource {
 
 #### 单图源
 
+对于单图源的插件，我们提供了 `PicSourcePlugin` 基类，只需要集成该类即可快速开发单图源插件。
+
 ```ts
 import { Context } from "koishi";
 import { DefinePlugin, RegisterSchema, SchemaProperty, LifecycleEvents } from "koishi-thirdeye";
@@ -65,24 +67,9 @@ export class Config extends PicSourceConfig {
 
 
 @DefinePlugin({ name: 'my-picsource', schema: Config })
-export default class MyPicSource extends PicSource implements LifecycleEvents {
-  constructor(ctx: Context, config: Partial<Config>) {
-    super(ctx);
-  }
-
-  @InjectConfig()
-  private config: Config;
-
-  @Inject(true)
-  private pics: PicsContainer;
-
+export default class MyPicSource extends PicSourcePlugin<Config> {
   async randomPic(tags: string[]) {
     return { url: `https://cdn02.moecube.com:444/images/ygopro-images-zh-CN/${this.config.code}.jpg`, description: `${this.config.code}` };
-  }
-
-  onApply() {
-    this.config.applyTo(this);
-    this.pics.addSource(this);
   }
 }
 ```

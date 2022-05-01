@@ -1,29 +1,17 @@
 // import 'source-map-support/register';
-import {
-  Context,
-  Assets,
-  Awaitable,
-  Random,
-  Logger,
-  Bot,
-  remove,
-} from 'koishi';
-import {
-  PicMiddlewareConfig,
-  PicMiddlewareInfo,
-  PicSourceInfo,
-  PicsPluginConfig,
-} from './config';
+import { Context, Awaitable, Random, Logger, Bot, remove } from 'koishi';
+import { PicSourceConfig, PicSourceInfo, PicsPluginConfig } from './config';
 import _ from 'lodash';
 import { segment, Quester } from 'koishi';
 import {
   BasePlugin,
   Caller,
-  ClassType,
   DefinePlugin,
   Inject,
+  InjectConfig,
   InjectLogger,
   LifecycleEvents,
+  PartialDeep,
   Provide,
 } from 'koishi-thirdeye';
 import { AxiosRequestConfig } from 'axios';
@@ -74,6 +62,28 @@ export class PicSource implements PicSourceInfo {
       pattern += `\t${this.description}`;
     }
     return pattern;
+  }
+}
+
+export class PicSourcePlugin<
+  C extends PicSourceConfig = PicSourceConfig,
+> extends PicSource {
+  constructor(ctx: Context, config: PartialDeep<C>) {
+    super(ctx);
+  }
+
+  @InjectConfig()
+  protected config: C;
+
+  @Inject(true)
+  protected pics: PicsContainer;
+
+  @InjectLogger()
+  protected logger: Logger;
+
+  onApply() {
+    this.config.applyTo(this);
+    this.pics.addSource(this);
   }
 }
 
