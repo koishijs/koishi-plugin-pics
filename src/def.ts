@@ -1,5 +1,6 @@
 import { Awaitable } from 'koishi';
-import { ClassType, SchemaProperty } from 'koishi-thirdeye';
+import { ClassType, SchemaClass, SchemaProperty } from 'koishi-thirdeye';
+import { Context } from 'vm';
 
 export interface PicSourceInfo {
   tags?: string[];
@@ -29,7 +30,6 @@ export interface Instances<T> {
   instances: T[];
 }
 
-
 export function ToInstancesConfig<T>(
   instanceConfig: ClassType<T>,
 ): new () => Instances<T> {
@@ -37,9 +37,33 @@ export function ToInstancesConfig<T>(
     instances: T[];
   };
 
-  SchemaProperty({ type: instanceConfig, default: [] })(
-    instanceConfigClass.prototype,
-    'instances',
-  );
+  SchemaProperty({
+    type: SchemaClass(instanceConfig),
+    default: [],
+    array: true,
+  })(instanceConfigClass.prototype, 'instances');
   return instanceConfigClass;
+}
+
+export function ClonePlugin<P extends { new (...args: any[]): any }>(
+  target: P,
+  name: string,
+): P {
+  const pluginName = target.name;
+  const clonedPlugin = class extends target {};
+  for (const property of ['Config', 'schema', 'using']) {
+    Object.defineProperty(clonedPlugin, property, {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: target[property],
+    });
+  }
+  Object.defineProperty(clonedPlugin, 'name', {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value: pluginName,
+  });
+  return clonedPlugin;
 }

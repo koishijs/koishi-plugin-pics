@@ -57,7 +57,7 @@ export class PicSource {
 ```ts
 import { Context } from "koishi";
 import { DefinePlugin, RegisterSchema, SchemaProperty, LifecycleEvents } from "koishi-thirdeye";
-import { PicSource, PicsContainer, PicSourceConfig } from "koishi-plugin-pics";
+import { PicSourcePlugin, PicsContainer, PicSourceConfig } from "koishi-plugin-pics";
 
 @RegisterSchema()
 export class Config extends PicSourceConfig {
@@ -72,58 +72,59 @@ export default class MyPicSource extends PicSourcePlugin<Config> {
     return { url: `https://cdn02.moecube.com:444/images/ygopro-images-zh-CN/${this.config.code}.jpg`, description: `${this.config.code}` };
   }
 }
+
+// 加载图源插件
+ctx.plugin(MyPicSource, { 
+  code: 10000, 
+  name: 'my-picsource', 
+  description: 'my-picsource' 
+});
 ```
 
 #### 多图源
 
+使用 `DefineMultiSourcePlugin` 方法创建多图源插件。该插件的配置具有 `instances` 数组属性，每一项都是一个图源的配置。
+
 ```ts
 import { Context } from "koishi";
 import { DefinePlugin, RegisterSchema, SchemaProperty, LifecycleEvents } from "koishi-thirdeye";
-import { PicSource, PicsContainer, PicSourceConfig } from "koishi-plugin-pics";
+import { PicSourcePlugin, PicsContainer, PicSourceConfig } from "koishi-plugin-pics";
 
 @RegisterSchema()
-export class InstanceConfig extends PicSourceConfig {
+export class Config extends PicSourceConfig {
   @SchemaProperty({ default: 10000 })
   code: number;
 }
 
-@RegisterSchema()
-export class Config {
-  constructor(config: Partial<InstanceConfig>[]) {}
-
-  @SchemaProperty({ type: InstanceConfig })
-  instances: InstanceConfig[];
-}
-
-
-export class MyPicSourceInstance extends PicSource {
-  constructor(ctx: Context, config: Partial<Config>) {
-    super(ctx);
-    config.applyTo(this);
-  }
-
+// 不 default
+@DefinePlugin({ name: 'my-picsource', schema: Config })
+export class MyPicSource extends PicSourcePlugin<Config> {
   async randomPic(tags: string[]) {
     return { url: `https://cdn02.moecube.com:444/images/ygopro-images-zh-CN/${this.config.code}.jpg`, description: `${this.config.code}` };
   }
 }
 
+// 在这里 default 加载插件
+export default class MyMultiPicSource extends DefineMultiSourcePlugin(
+  MyPicSource,
+  PicSourceConfig,
+) {}
 
-@DefinePlugin({ name: 'my-picsource', schema: Config })
-export default class MyPicSource extends BasePlugin<Config> implements LifecycleEvents {
-
-  @InjectConfig()
-  private config: Config;
-
-  @Inject(true)
-  private pics: PicsContainer;
-
-  onApply() {
-    for (const instanceConfig of this.config.instances) {
-      const instance = new MyPicSourceInstance(this.ctx, instanceConfig);
-      this.pics.addSource(instance);
-    }
-  }
-}
+// 加载图源插件
+ctx.plugin(MyMultiPicSource, { 
+  instances: [
+    {
+      code: 10000, 
+      name: 'my-picsource1', 
+      description: 'my-picsource1',
+    },
+    {
+      code: 10001, 
+      name: 'my-picsource2', 
+      description: 'my-picsource2',
+    },
+  ].
+});
 ```
 
 ### 开箱即用的 Schema 定义

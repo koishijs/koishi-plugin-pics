@@ -1,14 +1,23 @@
-import { Context, Awaitable, Logger } from 'koishi';
+import { Context, Awaitable, Logger, Plugin } from 'koishi';
 import {
   PartialDeep,
   InjectConfig,
   Inject,
   InjectLogger,
   BasePlugin,
+  ClassType,
+  DefinePlugin,
+  LifecycleEvents,
 } from 'koishi-thirdeye';
 import PicsContainer from '.';
 import { PicSourceConfig } from './config';
-import { PicSourceInfo, PicResult, Instances } from './def';
+import {
+  PicSourceInfo,
+  PicResult,
+  Instances,
+  ToInstancesConfig,
+  ClonePlugin,
+} from './def';
 
 export class PicSource implements PicSourceInfo {
   constructor(protected ctx: Context) {}
@@ -62,16 +71,55 @@ export class PicSourcePlugin<
   }
 }
 
-export class MultiPicSourcePlugin<
-  C extends PicSourceConfig = PicSourceConfig,
-> extends BasePlugin<Instances<C>> {
+export class MultiPicSourcePlugin<C extends PicSourceConfig>
+  extends BasePlugin<Instances<C>>
+  implements LifecycleEvents
+{
   @Inject(true)
   protected pics: PicsContainer;
 
   @InjectLogger()
   protected logger: Logger;
 
-  onApply() {
-    const { instances } = this.config;
+  getSourcePlugin(): new (ctx: Context, config: any) => PicSourcePlugin<C> {
+    throw new Error(`Not implemented`);
   }
+
+  registerSourceInstances() {
+    const sourcePlugin = this.getSourcePlugin();
+    for (const instanceConfig of this.config.instances) {
+      const clonedSourcePlugin = ClonePlugin(
+        sourcePlugin,
+        `${instanceConfig.name}-${instanceConfig.name}`,
+      );
+      this.ctx.plugin(clonedSourcePlugin, instanceConfig);
+    }
+  }
+
+  onApply() {
+    this.registerSourceInstances();
+  }
+}
+
+export function DefineMultiSourcePlugin<
+  C extends PicSourceConfig,
+  P extends PicSourcePlugin<C>,
+>(
+  SourcePlugin: new (ctx: Context, config: C) => P,
+  SourceConfig: ClassType<C>,
+  name = SourcePlugin.name,
+): new (
+  context: Context,
+  config: Instances<PartialDeep<C>>,
+) => MultiPicSourcePlugin<C> {
+  const pluginClass = class SpecificMultiPicSourcePlugin extends MultiPicSourcePlugin<C> {
+    getSourcePlugin() {
+      return SourcePlugin;
+    }
+  };
+
+  return DefinePlugin({
+    name,
+    schema: ToInstancesConfig(SourceConfig),
+  })(pluginClass);
 }
