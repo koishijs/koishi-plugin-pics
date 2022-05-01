@@ -1,11 +1,9 @@
 import { Awaitable, Context } from 'koishi';
-import { PicResult, PicSource } from '../src';
+import { DefinePlugin } from 'koishi-thirdeye';
+import { PicResult, PicSourceConfig, PicSourcePlugin } from '../src';
 
-class TestPicsource extends PicSource {
-  constructor(ctx: Context, public name: string) {
-    super(ctx);
-  }
-  isDefault = true;
+@DefinePlugin({ schema: PicSourceConfig })
+class TestPicsource extends PicSourcePlugin {
   randomPic(picTags: string[]): Awaitable<PicResult> {
     return {
       url: `https://cdn02.moecube.com:444/images/ygopro-images-${this.name}/${
@@ -18,8 +16,7 @@ class TestPicsource extends PicSource {
 
 export default class ExtrasInDev {
   constructor(ctx: Context) {
-    ctx.pics.addSource(new TestPicsource(ctx, 'zh-CN'));
-    ctx.pics.addSource(new TestPicsource(ctx, 'en-US'));
+    ctx.plugin(TestPicsource, { name: 'zh-CN', isDefault: true });
   }
 
   static using = ['pics'] as const;

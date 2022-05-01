@@ -1,6 +1,7 @@
 import { DefinePlugin } from 'koishi-thirdeye';
-import { PicMiddlewareBase, PicNext } from '../middleware';
+import { PicMiddlewareBase } from '../middleware';
 import { PicMiddlewareConfig } from '../config';
+import { PicNext } from '../def';
 
 @DefinePlugin({ schema: PicMiddlewareConfig })
 export class PicDownloaderMiddleware extends PicMiddlewareBase {

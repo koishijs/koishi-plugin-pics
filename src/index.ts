@@ -1,6 +1,6 @@
 // import 'source-map-support/register';
-import { Context, Awaitable, Random, Logger, Bot, remove } from 'koishi';
-import { PicSourceConfig, PicSourceInfo, PicsPluginConfig } from './config';
+import { Context, Random, Logger, Bot, remove } from 'koishi';
+import { PicsPluginConfig } from './config';
 import _ from 'lodash';
 import { segment, Quester } from 'koishi';
 import {
@@ -8,18 +8,19 @@ import {
   Caller,
   DefinePlugin,
   Inject,
-  InjectConfig,
   InjectLogger,
   LifecycleEvents,
-  PartialDeep,
   Provide,
 } from 'koishi-thirdeye';
 import { AxiosRequestConfig } from 'axios';
 import { PicAssetsTransformMiddleware } from './middlewares/assets';
 import { PicDownloaderMiddleware } from './middlewares/download';
-import { PicMiddleware, PicNext } from './middleware';
+import { PicMiddleware, PicNext, PicResult } from './def';
+import { PicSource } from './picsource';
 export * from './config';
 export * from './middleware';
+export * from './picsource';
+export * from './def';
 
 declare module 'koishi' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -27,63 +28,6 @@ declare module 'koishi' {
     interface Services {
       pics: PicsContainer;
     }
-  }
-}
-
-export interface PicResult {
-  url: string;
-  description?: string;
-}
-
-export class PicSource implements PicSourceInfo {
-  constructor(protected ctx: Context) {}
-  tags: string[] = [];
-  weight = 1;
-  name = 'default';
-  description = '';
-  isDefault = false;
-  randomPic(picTags: string[]): Awaitable<PicResult> {
-    // For override
-    throw new Error(`Not implemented`);
-  }
-
-  onStartup(): Awaitable<void> {
-    return;
-  }
-  onShutdown(): Awaitable<void> {
-    return;
-  }
-  getDisplayString() {
-    let pattern = this.name;
-    if (this.tags.length) {
-      pattern += `\t标签: ${this.tags.join(',')}`;
-    }
-    if (this.description) {
-      pattern += `\t${this.description}`;
-    }
-    return pattern;
-  }
-}
-
-export class PicSourcePlugin<
-  C extends PicSourceConfig = PicSourceConfig,
-> extends PicSource {
-  constructor(ctx: Context, config: PartialDeep<C>) {
-    super(ctx);
-  }
-
-  @InjectConfig()
-  protected config: C;
-
-  @Inject(true)
-  protected pics: PicsContainer;
-
-  @InjectLogger()
-  protected logger: Logger;
-
-  onApply() {
-    this.config.applyTo(this);
-    this.pics.addSource(this);
   }
 }
 

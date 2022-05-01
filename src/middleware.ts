@@ -1,5 +1,5 @@
 import { Awaitable, Logger } from 'koishi';
-import { PicMiddlewareConfig, PicMiddlewareInfo } from './config';
+import { PicMiddlewareConfig } from './config';
 import {
   BasePlugin,
   Inject,
@@ -7,12 +7,7 @@ import {
   LifecycleEvents,
 } from 'koishi-thirdeye';
 import PicsContainer from './index';
-
-export type PicNext = (url?: string) => Awaitable<string>;
-
-export interface PicMiddleware extends PicMiddlewareInfo {
-  use(url: string, next: PicNext): Awaitable<string>;
-}
+import { PicMiddleware, PicNext } from './def';
 
 export class PicMiddlewareBase<
     C extends PicMiddlewareConfig = PicMiddlewareConfig,
