@@ -67,3 +67,7 @@ export function ClonePlugin<P extends { new (...args: any[]): any }>(
   });
   return clonedPlugin;
 }
+
+export type TypeFromClass<T> = T extends { new (...args: any[]): infer U }
+  ? U
+  : never;

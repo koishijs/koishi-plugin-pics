@@ -17,6 +17,7 @@ import {
   Instances,
   ToInstancesConfig,
   ClonePlugin,
+  TypeFromClass,
 } from './def';
 
 export class PicSource implements PicSourceInfo {
@@ -49,9 +50,7 @@ export class PicSource implements PicSourceInfo {
   }
 }
 
-export class PicSourcePlugin<
-  C extends PicSourceConfig = PicSourceConfig,
-> extends PicSource {
+export class PicSourcePlugin<C extends PicSourceConfig> extends PicSource {
   constructor(ctx: Context, config: PartialDeep<C>) {
     super(ctx);
   }
@@ -101,18 +100,19 @@ export class MultiPicSourcePlugin<C extends PicSourceConfig>
   }
 }
 
-export function DefineMultiSourcePlugin<
-  C extends PicSourceConfig,
-  P extends PicSourcePlugin<C>,
->(
-  SourcePlugin: new (ctx: Context, config: C) => P,
-  SourceConfig: ClassType<C>,
+export function DefineMultiSourcePlugin<C extends ClassType<PicSourceConfig>>(
+  SourcePlugin: new (ctx: Context, config: TypeFromClass<C>) => PicSourcePlugin<
+    TypeFromClass<C>
+  >,
+  SourceConfig: C,
   name = SourcePlugin.name,
 ): new (
   context: Context,
-  config: Instances<PartialDeep<C>>,
-) => MultiPicSourcePlugin<C> {
-  const pluginClass = class SpecificMultiPicSourcePlugin extends MultiPicSourcePlugin<C> {
+  config: Instances<PartialDeep<TypeFromClass<C>>>,
+) => MultiPicSourcePlugin<TypeFromClass<C>> {
+  const pluginClass = class SpecificMultiPicSourcePlugin extends MultiPicSourcePlugin<
+    TypeFromClass<C>
+  > {
     getSourcePlugin() {
       return SourcePlugin;
     }

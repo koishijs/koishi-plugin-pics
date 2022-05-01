@@ -1,17 +1,7 @@
 // import 'source-map-support/register';
-import {
-  SchemaProperty,
-  RegisterSchema,
-  SchemaClass,
-  ClassType,
-} from 'koishi-thirdeye';
+import { SchemaProperty, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
 import { Quester } from 'koishi';
-import {
-  Instances,
-  PicMiddleware,
-  PicMiddlewareInfo,
-  PicSourceInfo,
-} from './def';
+import { PicMiddleware, PicMiddlewareInfo, PicSourceInfo } from './def';
 
 @RegisterSchema()
 export class PicsPluginConfig {
