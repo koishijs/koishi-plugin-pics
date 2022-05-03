@@ -52,7 +52,7 @@ export class PicSource {
 
 #### 单图源
 
-对于单图源的插件，我们提供了 `PicSourcePlugin` 基类，只需要集成该类即可快速开发单图源插件。
+对于单图源的插件，我们提供了 `PicSourcePlugin` 基类工厂函数，只需要继承该类即可快速开发单图源插件。
 
 ```ts
 import { Context } from "koishi";
@@ -61,13 +61,16 @@ import { PicSourcePlugin, PicsContainer, PicSourceConfig } from "koishi-plugin-p
 
 @RegisterSchema()
 export class Config extends PicSourceConfig {
+  @SchemaProperty({ default: 'my-source' }) // 推荐覆盖该属性以提供默认值
+  name: string;
+  
   @SchemaProperty({ default: 10000 })
   code: number;
 }
 
 
-@DefinePlugin({ name: 'my-picsource', schema: Config })
-export default class MyPicSource extends PicSourcePlugin<Config> {
+@DefinePlugin()
+export default class MyPicSource extends PicSourcePlugin(Config) {
   async randomPic(tags: string[]) {
     return { url: `https://cdn02.moecube.com:444/images/ygopro-images-zh-CN/${this.config.code}.jpg`, description: `${this.config.code}` };
   }
@@ -83,7 +86,7 @@ ctx.plugin(MyPicSource, {
 
 #### 多图源
 
-使用 `DefineMultiSourcePlugin` 方法创建多图源插件。该插件的配置具有 `instances` 数组属性，每一项都是一个图源的配置。
+使用 koishi-thirdeye 提供的 `MultiInstancePlugin` 方法创建多图源插件。该插件的配置具有 `instances` 数组属性，每一项都是一个图源的配置。
 
 ```ts
 import { Context } from "koishi";
@@ -92,23 +95,23 @@ import { PicSourcePlugin, PicsContainer, PicSourceConfig } from "koishi-plugin-p
 
 @RegisterSchema()
 export class Config extends PicSourceConfig {
+  @SchemaProperty({ default: 'my-source' }) // 推荐覆盖该属性以提供默认值
+  name: string;
+  
   @SchemaProperty({ default: 10000 })
   code: number;
 }
 
 // 不 default
-@DefinePlugin({ name: 'my-picsource', schema: Config })
-export class MyPicSource extends PicSourcePlugin<Config> {
+@DefinePlugin()
+export class MyPicSource extends PicSourcePlugin(Config) {
   async randomPic(tags: string[]) {
     return { url: `https://cdn02.moecube.com:444/images/ygopro-images-zh-CN/${this.config.code}.jpg`, description: `${this.config.code}` };
   }
 }
 
 // 在这里 default 加载插件
-export default class MyMultiPicSource extends DefineMultiSourcePlugin(
-  MyPicSource,
-  PicSourceConfig,
-) {}
+export default class MyMultiPicSource extends MultiInstancePlugin(MyPicSource) {}
 
 // 加载图源插件
 ctx.plugin(MyMultiPicSource, { 
@@ -200,7 +203,7 @@ export class PicSourceConfig {
 
 #### 插件基类
 
-图源中间件插件需要继承 `PicMiddlewareBase<Config>` 类，覆盖 `use` 方法，并使用 `@DefinePlugin({ schema: Config })` 进行注解。
+图源中间件插件需要继承 `PicMiddlewareBase<Config>` 类，覆盖 `use` 方法，并使用 `@DefinePlugin()` 进行修饰。
 
 该基类具有这些预定义属性，可以直接使用。
 
@@ -210,7 +213,7 @@ export class PicSourceConfig {
 
 #### 配置基类
 
-配置基类定义如下。插件配置 Schema 类需要从该类进行继承，并添加自身所需要的属性。若无多余配置，则可以直接使用 `PicMiddlewareConfig` 类作为配置类。
+配置基类定义如下。定义插件时该类的属性会自动注入到配置类内。
 
 ```ts
 export class PicMiddlewareConfig {
@@ -232,13 +235,13 @@ export class PicMiddlewareConfig {
 下例图像中间件插件会将所有 URL 进行预先下载，并使用 `download` 方法转换为 `base64://` 形式的 URL，即为 `koishi-plugin-pics` 中 `useBase64` 选项的功能。事实上，`koishi-plugin-pics` 中的 `useAssets` 和 `useBase64` 这两个选项的功能，都是由内置图像中间件实现的。
 
 ```ts
-export class Config extends PicMiddlewareConfig {
+export class Config {
   @SchemaProperty({ type: Schema.object() })
   axiosConfig: AxiosRequestConfig;
 }
 
-@DefinePlugin({ schema: Config })
-export default class PicDownloaderMiddleware extends PicMiddlewareBase<Config> {
+@DefinePlugin()
+export default class PicDownloaderMiddleware extends PicMiddlewarePlugin(Config) {
   override async use(url: string, next: PicNext) {
     const downloadedUrl = await this.pics.download(url, config.axiosConfig);
     return next(downloadedUrl);

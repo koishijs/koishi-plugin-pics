@@ -48,8 +48,6 @@ export class PicSourceConfig implements PicSourceInfo {
   }
 }
 
-export const PicSourceSchema = SchemaClass(PicSourceConfig);
-
 export class PicMiddlewareConfig {
   constructor(config: PicMiddlewareInfo) {}
   @SchemaProperty({ description: '中间件名称。' })
