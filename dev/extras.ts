@@ -8,7 +8,7 @@ import {
 import { PicResult, PicSourceConfig, PicSourcePlugin } from '../src';
 
 @RegisterSchema()
-class Config extends PicSourceConfig {
+class Config {
   @SchemaProperty({ default: 'zh-CN' })
   name: string;
 

@@ -94,7 +94,7 @@ import { DefinePlugin, RegisterSchema, SchemaProperty, LifecycleEvents } from "k
 import { PicSourcePlugin, PicsContainer, PicSourceConfig } from "koishi-plugin-pics";
 
 @RegisterSchema()
-export class Config extends PicSourceConfig {
+export class Config {
   @SchemaProperty({ default: 'my-source' }) // 推荐覆盖该属性以提供默认值
   name: string;
   
