@@ -27,20 +27,20 @@ npm install koishi-plugin-pics
 
 ### 图源插件
 
-* [`koishi-plugin-picsource-localfs`](https://npmjs.com/package/koishi-plugin-picsource-localfs) 本地文件图源。
+* [koishi-plugin-picsource-localfs](https://npmjs.com/package/koishi-plugin-picsource-localfs) 本地文件图源。
 
-* [`koishi-plugin-picsource-lolicon`](https://npmjs.com/package/koishi-plugin-picsource-lolicon) [Lolicon](https://api.lolicon.app/ ) 图源。
+* [koishi-plugin-picsource-lolicon](https://npmjs.com/package/koishi-plugin-picsource-lolicon) [Lolicon](https://api.lolicon.app/ ) 图源。
 
-* [`koishi-plugin-picsource-heisi`](https://npmjs.com/package/koishi-plugin-picsource-heisi) heisi 图源，基于 [nonebot_plugin_heisi](https://github.com/yzyyz1387/nonebot_plugin_heisi)。
+* [koishi-plugin-picsource-heisi](https://npmjs.com/package/koishi-plugin-picsource-heisi) heisi 图源，基于 [nonebot_plugin_heisi](https://github.com/yzyyz1387/nonebot_plugin_heisi)。
 
-* [`koishi-plugin-picsource-yande`](https://npmjs.com/package/koishi-plugin-picsource-yande) [Yandere](https://yande.re/) 及 [Konachan](https://konachan.com) 图源。
+* [koishi-plugin-picsource-yande](https://npmjs.com/package/koishi-plugin-picsource-yande) [Yandere](https://yande.re/) 及 [Konachan](https://konachan.com) 图源。
 
 ### 图源配置
 
 在开始启动之前，你还需要添加一些配置，告诉 pics 插件有哪些图源插件可以使用，以及每个图源插件的配置。对于配置项的详细说明，请参考[配置](#配置)。
 
-下面以 [`koishi-plugin-picsource-lolicon`](https://npmjs.com/package/koishi-plugin-picsource-lolicon) 和
-[`koishi-plugin-picsource-yande`](https://npmjs.com/package/koishi-plugin-picsource-yande) 为例进行说明。
+下面以 [koishi-plugin-picsource-lolicon](https://npmjs.com/package/koishi-plugin-picsource-lolicon) 和
+[koishi-plugin-picsource-yande](https://npmjs.com/package/koishi-plugin-picsource-yande) 为例进行说明。
 
 ```yaml
 # koishi.yml

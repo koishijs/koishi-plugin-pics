@@ -57,10 +57,10 @@ export class PicSource {
 ```ts
 import { Context } from "koishi";
 import { DefinePlugin, RegisterSchema, SchemaProperty, LifecycleEvents } from "koishi-thirdeye";
-import { PicSourcePlugin, PicsContainer, PicSourceConfig } from "koishi-plugin-pics";
+import { PicSourcePlugin, PicsContainer } from "koishi-plugin-pics";
 
 @RegisterSchema()
-export class Config extends PicSourceConfig {
+export class Config {
   @SchemaProperty({ default: 'my-source' }) // 推荐覆盖该属性以提供默认值
   name: string;
   
@@ -91,7 +91,7 @@ ctx.plugin(MyPicSource, {
 ```ts
 import { Context } from "koishi";
 import { DefinePlugin, RegisterSchema, SchemaProperty, LifecycleEvents } from "koishi-thirdeye";
-import { PicSourcePlugin, PicsContainer, PicSourceConfig } from "koishi-plugin-pics";
+import { PicSourcePlugin, PicsContainer } from "koishi-plugin-pics";
 
 @RegisterSchema()
 export class Config {
@@ -130,38 +130,9 @@ ctx.plugin(MyMultiPicSource, {
 });
 ```
 
-### 开箱即用的 Schema 定义
+### Schema 定义
 
-为了方便编写图源插件的配置部分，这里提供了一些开箱即用的配置文件 Schema 定义，可以从 `koishi-plugin-pics` 中导出。 
-
-#### `PicSourceSchema`
-
-包含下列字段的 Schema 定义，方便创建图源插件的配置。
-
-```ts
-export interface PicSourceInfo {
-  // 图源的标签列表，使用 -s 参数匹配。
-  tags: string[];
-  // 图源权重，权重越大随机到的概率越大，默认 1
-  weight: number;
-  // 图源名称。
-  name: string;
-  // 图源介绍
-  description: string;
-  // 是否为默认图源。用户未指定参数时使用默认图源。
-  isDefault: boolean;
-}
-```
-
-同时 `PicSourceInfo` 也可以从 `koishi-plugin-pics` 中导出。
-
-#### `PicSourceConfig`
-
-[`schemastery-gen`](https://code.mycard.moe/3rdeye/schemastery-gen) 或 [`koishi-thirdeye`](https://code.mycard.moe/3rdeye/koishi-thirdeye) 用户可以使用 `PicSourceConfig` 类。插件的配置文件直接继承该类即可。
-
-> 继承 `PicSourceConfig` 的类需要手动使用 `@RegisterSchema()` 装饰器将自身注册为 Schema 定义。
-
-> `schemastery-gen` 包请**不要**使用 Webpack 打包。使用 Webpack 编写插件的用户请把该包列为 external 。
+图源配置会自动注入到图源插件的配置类中。
 
 ```ts
 export class PicSourceConfig {
