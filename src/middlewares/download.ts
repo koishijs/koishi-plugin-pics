@@ -1,10 +1,9 @@
 import { DefinePlugin } from 'koishi-thirdeye';
-import { PicMiddlewareBase } from '../middleware';
-import { PicMiddlewareConfig } from '../config';
+import { PicMiddlewarePlugin } from '../middleware';
 import { PicNext } from '../def';
 
-@DefinePlugin({ schema: PicMiddlewareConfig })
-export class PicDownloaderMiddleware extends PicMiddlewareBase {
+@DefinePlugin()
+export class PicDownloaderMiddleware extends PicMiddlewarePlugin() {
   override async use(url: string, next: PicNext) {
     const downloadedUrl = await this.pics.download(url);
     return next(downloadedUrl);

@@ -1,11 +1,10 @@
 import { DefinePlugin, Inject } from 'koishi-thirdeye';
 import { Assets } from 'koishi';
-import { PicMiddlewareBase } from '../middleware';
-import { PicMiddlewareConfig } from '../config';
 import { PicNext } from '../def';
+import { PicMiddlewarePlugin } from '../middleware';
 
-@DefinePlugin({ schema: PicMiddlewareConfig })
-export class PicAssetsTransformMiddleware extends PicMiddlewareBase {
+@DefinePlugin()
+export class PicAssetsTransformMiddleware extends PicMiddlewarePlugin() {
   @Inject()
   private assets: Assets;
 

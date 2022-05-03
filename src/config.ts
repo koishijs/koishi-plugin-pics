@@ -27,13 +27,11 @@ export type PicsPluginConfigLike = Partial<PicsPluginConfig>;
 // For convenience of plugins
 
 export class PicSourceConfig implements PicSourceInfo {
-  constructor(config: Partial<PicSourceInfo>) {}
-
   @SchemaProperty({ type: 'string', default: [], description: '图源标签' })
   tags: string[];
   @SchemaProperty({ default: 1, description: '图源权重' })
   weight: number;
-  @SchemaProperty({ default: 1, description: '图源名称', required: true })
+  @SchemaProperty({ description: '图源名称', required: true })
   name: string;
   @SchemaProperty({ description: '图源描述' })
   description?: string;

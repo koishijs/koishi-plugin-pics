@@ -1,27 +1,17 @@
-import { Context, Awaitable, Logger, Plugin } from 'koishi';
+import { Context, Awaitable, Logger } from 'koishi';
 import {
   PartialDeep,
   InjectConfig,
   Inject,
   InjectLogger,
-  BasePlugin,
-  ClassType,
-  DefinePlugin,
-  LifecycleEvents,
+  CreatePluginFactory,
 } from 'koishi-thirdeye';
 import PicsContainer from '.';
 import { PicSourceConfig } from './config';
-import {
-  PicSourceInfo,
-  PicResult,
-  Instances,
-  ToInstancesConfig,
-  ClonePlugin,
-  TypeFromClass,
-} from './def';
+import { PicSourceInfo, PicResult } from './def';
 
 export class PicSource implements PicSourceInfo {
-  constructor(protected ctx: Context) {}
+  constructor(public ctx: Context) {}
   tags: string[] = [];
   weight = 1;
   name = 'default';
@@ -50,19 +40,19 @@ export class PicSource implements PicSourceInfo {
   }
 }
 
-export class PicSourcePlugin<C extends PicSourceConfig> extends PicSource {
-  constructor(ctx: Context, config: PartialDeep<C>) {
+export class BasePicSourcePlugin extends PicSource {
+  constructor(ctx: Context, config: PartialDeep<PicSourceConfig>) {
     super(ctx);
   }
 
   @InjectConfig()
-  protected config: C;
+  config: PicSourceConfig;
 
   @Inject(true)
-  protected pics: PicsContainer;
+  pics: PicsContainer;
 
   @InjectLogger()
-  protected logger: Logger;
+  logger: Logger;
 
   onApply() {
     this.config.applyTo(this);
@@ -70,56 +60,7 @@ export class PicSourcePlugin<C extends PicSourceConfig> extends PicSource {
   }
 }
 
-export class MultiPicSourcePlugin<C extends PicSourceConfig>
-  extends BasePlugin<Instances<C>>
-  implements LifecycleEvents
-{
-  @Inject(true)
-  protected pics: PicsContainer;
-
-  @InjectLogger()
-  protected logger: Logger;
-
-  getSourcePlugin(): new (ctx: Context, config: any) => PicSourcePlugin<C> {
-    throw new Error(`Not implemented`);
-  }
-
-  registerSourceInstances() {
-    const sourcePlugin = this.getSourcePlugin();
-    for (const instanceConfig of this.config.instances) {
-      const clonedSourcePlugin = ClonePlugin(
-        sourcePlugin,
-        `${instanceConfig.name}-${instanceConfig.name}`,
-      );
-      this.ctx.plugin(clonedSourcePlugin, instanceConfig);
-    }
-  }
-
-  onApply() {
-    this.registerSourceInstances();
-  }
-}
-
-export function DefineMultiSourcePlugin<C extends ClassType<PicSourceConfig>>(
-  SourcePlugin: new (ctx: Context, config: TypeFromClass<C>) => PicSourcePlugin<
-    TypeFromClass<C>
-  >,
-  SourceConfig: C,
-  name = SourcePlugin.name,
-): new (
-  context: Context,
-  config: Instances<PartialDeep<TypeFromClass<C>>>,
-) => MultiPicSourcePlugin<TypeFromClass<C>> {
-  const pluginClass = class SpecificMultiPicSourcePlugin extends MultiPicSourcePlugin<
-    TypeFromClass<C>
-  > {
-    getSourcePlugin() {
-      return SourcePlugin;
-    }
-  };
-
-  return DefinePlugin({
-    name,
-    schema: ToInstancesConfig(SourceConfig),
-  })(pluginClass);
-}
+export const PicSourcePlugin = CreatePluginFactory(
+  BasePicSourcePlugin,
+  PicSourceConfig,
+);

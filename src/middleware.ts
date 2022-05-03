@@ -2,6 +2,7 @@ import { Awaitable, Logger } from 'koishi';
 import { PicMiddlewareConfig } from './config';
 import {
   BasePlugin,
+  CreatePluginFactory,
   Inject,
   InjectLogger,
   LifecycleEvents,
@@ -9,10 +10,8 @@ import {
 import PicsContainer from './index';
 import { PicMiddleware, PicNext } from './def';
 
-export class PicMiddlewareBase<
-    C extends PicMiddlewareConfig = PicMiddlewareConfig,
-  >
-  extends BasePlugin<C>
+export class BasePicMiddlewarePlugin
+  extends BasePlugin<PicMiddlewareConfig>
   implements PicMiddleware, LifecycleEvents
 {
   @Inject(true)
@@ -30,3 +29,8 @@ export class PicMiddlewareBase<
     return next(url);
   }
 }
+
+export const PicMiddlewarePlugin = CreatePluginFactory(
+  BasePicMiddlewarePlugin,
+  PicMiddlewareConfig,
+);
