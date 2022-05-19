@@ -6,11 +6,19 @@ import { segment, Quester } from 'koishi';
 import {
   BasePlugin,
   Caller,
+  CommandExample,
+  CommandLocale,
   DefinePlugin,
   Inject,
   InjectLogger,
   LifecycleEvents,
   Provide,
+  PutArgs,
+  PutBot,
+  PutOption,
+  PutRenderer,
+  Renderer,
+  UseCommand,
 } from 'koishi-thirdeye';
 import { AxiosRequestConfig } from 'axios';
 import { PicAssetsTransformMiddleware } from './middlewares/assets';
@@ -242,76 +250,81 @@ export default class PicsContainer
     }
   }
 
+  @UseCommand('{{commandName}}  [...tags:string]')
+  @CommandLocale('zh', {
+    description: '获取随机图片',
+    options: {
+      source: `指定图源，逗号分隔。图源可以用 {{commandName}}.sources 查询。`,
+    },
+    usage: `从各个图源中随机获取一张随机图片。图源可以用 {{commandName}}.sources 查询。参数均为可选。`,
+    messages: {
+      'not-found': '未找到任何图片。',
+    },
+  })
+  @CommandLocale('en', {
+    description: 'Get random picture',
+    options: {
+      source: `Specify the source, separated by comma. You can query the sources with {{commandName}}.sources.`,
+    },
+    usage: `Get a random picture from a random source. Sources can be queried with command {{commandName}}.sources`,
+    messages: {
+      'not-found': 'No pictures found.',
+    },
+  })
+  @CommandExample(`{{commandName}}`)
+  @CommandExample(`{{commandName}} yuyuko`)
+  @CommandExample(`{{commandName}} -s yande`)
+  @CommandExample(`{{commandName}} -s yande yuyuko saigyouji`)
+  async onPic(
+    @PutOption('source', `-s <source>`) source: string,
+    @PutArgs() picTags: string[],
+    @PutRenderer('.not-found') notFound: Renderer,
+    @PutBot() bot: Bot,
+  ) {
+    const sourceTags = source?.split(/[ ,+\uFF0C\uFF0B\u3001]/) || [];
+    picTags ||= [];
+    const result = await this.randomPic(picTags, sourceTags);
+    if (!result) {
+      return notFound();
+    }
+
+    let msg = await this.getSegment(result.url, bot);
+    if (result.description) {
+      msg += `\n${result.description}`;
+    }
+    return msg;
+  }
+
+  @UseCommand('{{commandName}}.sources')
+  @CommandLocale('zh', {
+    description: '查询图源列表',
+    options: {},
+    usage: '图源标签可用于图片获取的图源筛选。',
+    messages: {
+      list: '图源的列表如下:',
+    },
+  })
+  @CommandLocale('en', {
+    description: 'Query picture sources',
+    options: {},
+    usage: 'Source tags can be used to filter picture sources.',
+    messages: {
+      list: 'List of sources:',
+    },
+  })
+  @CommandExample(`{{commandName}}.sources`)
+  @CommandExample(`{{commandName}}.sources pixiv`)
+  async onQuerySource(
+    @PutArgs() sourceTags: string[],
+    @PutRenderer('.list') list: Renderer,
+  ) {
+    sourceTags ||= [];
+    const sources = this.pickAvailableSources(sourceTags, true);
+    return `${list()}\n${sources.map((s) => s.getDisplayString()).join('\n')}`;
+  }
+
   onApply() {
     this._http = this.http.extend(this.config.httpConfig);
     this.installDefaultMiddlewares();
-    const ctx = this.ctx;
-    ctx.i18n.define('zh', `commands.${this.config.commandName}`, {
-      description: '获取随机图片',
-      options: {
-        source: `指定图源，逗号分隔。图源可以用 ${this.config.commandName}.sources 查询。`,
-      },
-      usage: `从各个图源中随机获取一张随机图片。图源可以用 ${this.config.commandName}.sources 查询。参数均为可选。`,
-      messages: {
-        'not-found': '未找到任何图片。',
-      },
-    });
-    ctx.i18n.define('en', `commands.${this.config.commandName}`, {
-      description: 'Get random picture',
-      options: {},
-      usage: `Get a random picture from a random sourse. Sources can be queried with command ${this.config.commandName}.sources`,
-      messages: {
-        'not-found': 'No pictures found.',
-      },
-    });
-    ctx.i18n.define('zh', `commands.${this.config.commandName}.sources`, {
-      description: '查询图源列表',
-      options: {},
-      usage: '图源标签可用于图片获取的图源筛选。',
-      messages: {
-        list: '图源的列表如下:',
-      },
-    });
-    ctx.i18n.define('en', `commands.${this.config.commandName}.sources`, {
-      description: 'Query picture sources',
-      options: {},
-      usage: 'Source tags can be used to filter picture sources.',
-      messages: {
-        list: 'List of sources:',
-      },
-    });
-    ctx
-      .command(`${this.config.commandName} [...tags:string]`)
-      .option('source', `-s <source:string>`)
-      .example(`${this.config.commandName}`)
-      .example(`${this.config.commandName} yuyuko`)
-      .example(`${this.config.commandName} -s yande`)
-      .example(`${this.config.commandName} -s yande yuyuko saigyouji`)
-      .action(async (argv, ...picTags) => {
-        const sourceTags = argv.options.source
-          ? argv.options.source.split(/[ ,+\uFF0C\uFF0B\u3001]/)
-          : [];
-        picTags ||= [];
-        const result = await this.randomPic(picTags, sourceTags);
-        if (!result) {
-          return argv.session.text('.not-found');
-        }
-
-        let msg = await this.getSegment(result.url, argv.session.bot);
-        if (result.description) {
-          msg += `\n${result.description}`;
-        }
-        return msg;
-      })
-      .subcommand('.sources [...tags:string]')
-      .example(`${this.config.commandName}.sources`)
-      .example(`${this.config.commandName}.sources pixiv`)
-      .action(async (argv, ...sourceTags) => {
-        sourceTags ||= [];
-        const sources = this.pickAvailableSources(sourceTags, true);
-        return `${argv.session.text('.list')}\n${sources
-          .map((s) => s.getDisplayString())
-          .join('\n')}`;
-      });
   }
 }
