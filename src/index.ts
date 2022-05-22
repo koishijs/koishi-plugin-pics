@@ -250,7 +250,7 @@ export default class PicsContainer
     }
   }
 
-  @UseCommand('{{commandName}}  [...tags:string]')
+  @UseCommand('{{commandName}} [...tags:string]')
   @CommandLocale('zh', {
     description: '获取随机图片',
     options: {

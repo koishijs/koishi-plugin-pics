@@ -6,7 +6,7 @@ describe('Test of plugin.', () => {
 
   beforeEach(async () => {
     app = new App();
-    // app.plugin(TargetPlugin);
+    app.plugin(TargetPlugin, { commandName: 'setu' });
     await app.start();
   });
 
