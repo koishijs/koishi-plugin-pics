@@ -21,8 +21,6 @@
     "qqbot",
     "cqhttp",
     "onebot",
-    "impl:pics",
-    "optional:assets"
   ],
   "bugs": {
     "url": "https://github.com/koishijs/koishi-plugin-pics/issues"
@@ -75,5 +73,22 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "koishi": {
+    "service": {
+      "optional": [
+        "assets"
+      ],
+      "implements": [
+        "pics"
+      ]
+    },
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "recommends": [
+      "picsource-lolicon"
+    ]
   }
 }
