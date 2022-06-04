@@ -20,7 +20,7 @@
     "Koishi.js",
     "qqbot",
     "cqhttp",
-    "onebot",
+    "onebot"
   ],
   "bugs": {
     "url": "https://github.com/koishijs/koishi-plugin-pics/issues"
