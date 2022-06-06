@@ -1,11 +1,18 @@
-import { Awaitable, Context } from 'koishi';
+import { Awaitable, Context, Schema } from 'koishi';
 import {
   DefinePlugin,
   MultiInstancePlugin,
   RegisterSchema,
   SchemaProperty,
 } from 'koishi-thirdeye';
-import { PicResult, PicSourceConfig, PicSourcePlugin } from '../src';
+import {
+  PicResult,
+  PicSource,
+  PicSourceConfig,
+  PicSourceInfo,
+  PicSourcePlugin,
+  PlainPicSourcePlugin,
+} from '../src';
 
 @RegisterSchema()
 class Config {
@@ -28,6 +35,24 @@ class TestPicSourcePlugin extends PicSourcePlugin(Config) {
   }
 }
 
+const plainBase = PlainPicSourcePlugin({
+  name: Schema.string().default('zh-CN'),
+  endpoint: Schema.string().default('https://cdn02.moecube.com:444'),
+});
+
+class TestPlainPicSourcePlugin extends plainBase {
+  static using = ['pics'] as const;
+  static Config = plainBase.Config;
+  randomPic(picTags: string[]): Awaitable<PicResult> {
+    return {
+      url: `${this.config.endpoint}/images/ygopro-images-${this.name}/${
+        picTags[0] || '10000'
+      }.jpg`,
+      description: picTags[0] || '10000',
+    };
+  }
+}
+
 @DefinePlugin()
 export class TestMultiPicSourcePlugin extends MultiInstancePlugin(
   TestPicSourcePlugin,
@@ -35,17 +60,10 @@ export class TestMultiPicSourcePlugin extends MultiInstancePlugin(
 
 export default class ExtrasInDev {
   constructor(ctx: Context) {
-    ctx.plugin(TestMultiPicSourcePlugin, {
-      instances: [
-        {
-          // name: 'zh-CN',
-          isDefault: true,
-          endpoint: 'https://cdn02.moecube.com:444',
-        },
-        {
-          name: 'en-US',
-        },
-      ],
+    ctx.plugin(TestPlainPicSourcePlugin, {
+      // name: 'zh-CN',
+      isDefault: true,
+      // endpoint: 'https://cdn02.moecube.com:444',
     });
   }
 

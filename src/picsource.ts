@@ -1,10 +1,11 @@
-import { Context, Awaitable, Logger } from 'koishi';
+import { Context, Awaitable, Logger, Schema } from 'koishi';
 import {
   PartialDeep,
   InjectConfig,
   Inject,
   InjectLogger,
   CreatePluginFactory,
+  schemaFromClass,
 } from 'koishi-thirdeye';
 import PicsContainer from '.';
 import { PicSourceConfig } from './config';
@@ -17,6 +18,15 @@ export class PicSource implements PicSourceInfo {
   name = 'default';
   description = '';
   isDefault = false;
+
+  applyConfig(src: Partial<PicSourceInfo>) {
+    this.name = src.name;
+    this.tags ??= src.tags;
+    this.weight ??= src.weight;
+    this.description ??= src.description;
+    this.isDefault ??= src.isDefault;
+  }
+
   randomPic(picTags: string[]): Awaitable<PicResult> {
     // For override
     throw new Error(`Not implemented`);
@@ -64,3 +74,24 @@ export const PicSourcePlugin = CreatePluginFactory(
   BasePicSourcePlugin,
   PicSourceConfig,
 );
+
+export function PlainPicSourcePlugin<C>(dict: {
+  [K in keyof C]: Schema<C[K]>;
+}) {
+  const Config = schemaFromClass(PicSourceConfig) as Schema<
+    PartialDeep<PicSourceConfig & C>,
+    PicSourceConfig & C
+  >;
+  Object.assign(Config.dict, dict);
+  return class PlainPicSourcePluginBase extends PicSource {
+    config: PicSourceInfo & C;
+    constructor(ctx: Context, config: PartialDeep<C & PicSourceInfo>) {
+      super(ctx);
+      this.config = config as PicSourceInfo & C;
+      this.applyConfig(config);
+      ctx.pics.addSource(this);
+    }
+    static Config = Config;
+    static using = ['pics'] as const;
+  };
+}
