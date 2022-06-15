@@ -89,7 +89,7 @@ export default class PicsContainer
 
   middleware(mid: PicMiddleware, targetCtx?: Context) {
     const processingCtx: Context = targetCtx || this.caller;
-    mid.name ||= processingCtx.state?.plugin?.name;
+    mid.name ||= processingCtx.state?.runtime?.plugin?.name;
     const disposable = processingCtx.on('dispose', () => {
       disposable();
       this.removeMiddlware(mid);
