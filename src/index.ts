@@ -234,8 +234,8 @@ export default class PicsContainer
   async getSegment(url: string, bot?: Bot) {
     url = await this.resolveUrl(url);
     const picData: segment.Data = {
-      [url.startsWith('base64://') &&
-      (this.isOneBotBot(bot) || this.config.preferFile)
+      [(url.startsWith('base64://') && this.isOneBotBot(bot)) ||
+      this.config.preferFile
         ? 'file'
         : 'url']: url,
       cache: true,
