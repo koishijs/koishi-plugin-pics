@@ -20,6 +20,12 @@ export class PicsPluginConfig {
 
   @SchemaProperty({ type: Quester.createSchema(), default: {} })
   httpConfig: Quester.Config;
+
+  @SchemaProperty({
+    description: 'OneBot 机器人永远使用 file 字段。',
+    default: false,
+  })
+  preferFile: boolean;
 }
 
 export type PicsPluginConfigLike = Partial<PicsPluginConfig>;
