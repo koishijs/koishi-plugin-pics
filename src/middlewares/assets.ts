@@ -9,10 +9,10 @@ export class PicAssetsTransformMiddleware extends PicMiddlewarePlugin() {
   private assets: Assets;
 
   override async use(url: string, next: PicNext) {
+    const finalUrl = await next(url);
     if (!this.assets) {
-      return next();
+      return finalUrl;
     }
-    const transformed = await this.assets.upload(url, undefined);
-    return next(transformed);
+    return this.assets.upload(finalUrl, undefined);
   }
 }
