@@ -7,11 +7,13 @@ import {
   InjectLogger,
   LifecycleEvents,
   PartialDeep,
+  Reusable,
   schemaFromClass,
 } from 'koishi-thirdeye';
 import PicsContainer, { PicMiddlewareInfo } from './index';
 import { PicMiddleware, PicNext } from './def';
 
+@Reusable()
 export class BasePicMiddlewarePlugin
   extends BasePlugin<PicMiddlewareConfig>
   implements PicMiddleware, LifecycleEvents
@@ -51,6 +53,7 @@ export function PlainPicMiddlewarePlugin<C>(dict: {
     config: PicMiddlewareInfo & C;
     static Config = Config;
     static using = ['pics'] as const;
+    static reusable = true;
     constructor(
       public ctx: Context,
       config: PartialDeep<C & PicMiddlewareInfo>,

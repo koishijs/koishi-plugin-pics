@@ -6,6 +6,8 @@ import {
   InjectLogger,
   CreatePluginFactory,
   schemaFromClass,
+  Apply,
+  Reusable,
 } from 'koishi-thirdeye';
 import PicsContainer from '.';
 import { PicSourceConfig } from './config';
@@ -50,6 +52,7 @@ export class PicSource implements PicSourceInfo {
   }
 }
 
+@Reusable()
 export class BasePicSourcePlugin extends PicSource {
   constructor(ctx: Context, config: PartialDeep<PicSourceConfig>) {
     super(ctx);
@@ -64,7 +67,8 @@ export class BasePicSourcePlugin extends PicSource {
   @InjectLogger()
   logger: Logger;
 
-  onApply() {
+  @Apply()
+  initializeSource() {
     this.config.applyTo(this);
     this.pics.addSource(this);
   }
@@ -93,5 +97,6 @@ export function PlainPicSourcePlugin<C>(dict: {
     }
     static Config = Config;
     static using = ['pics'] as const;
+    static reusable = true;
   };
 }
