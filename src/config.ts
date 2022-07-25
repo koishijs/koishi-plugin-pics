@@ -1,6 +1,6 @@
 // import 'source-map-support/register';
 import { SchemaProperty, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
-import { Quester } from 'koishi';
+import { Quester, Schema } from 'koishi';
 import { PicMiddleware, PicMiddlewareInfo, PicSourceInfo } from './def';
 
 @RegisterSchema()
@@ -18,7 +18,7 @@ export class PicsPluginConfig {
   @SchemaProperty({ description: '使用 Base64 发送图片结果。', default: false })
   useBase64: boolean;
 
-  @SchemaProperty({ type: Quester.createSchema(), default: {} })
+  @SchemaProperty({ type: Schema.object({}), default: {} })
   httpConfig: Quester.Config;
 
   @SchemaProperty({

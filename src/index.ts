@@ -4,7 +4,7 @@ import { PicsPluginConfig } from './config';
 import _ from 'lodash';
 import { segment, Quester } from 'koishi';
 import {
-  BasePlugin,
+  StarterPlugin,
   Caller,
   CommandExample,
   CommandLocale,
@@ -31,18 +31,15 @@ export * from './picsource';
 export * from './def';
 
 declare module 'koishi' {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Context {
-    interface Services {
-      pics: PicsContainer;
-    }
+  interface Context {
+    pics: PicsContainer;
   }
 }
 
 @Provide('pics', { immediate: true })
-@DefinePlugin({ name: 'pics', schema: PicsPluginConfig })
+@DefinePlugin({ name: 'pics' })
 export default class PicsContainer
-  extends BasePlugin<PicsPluginConfig>
+  extends StarterPlugin(PicsPluginConfig)
   implements LifecycleEvents
 {
   private sources = new Map<PicSource, () => boolean>();

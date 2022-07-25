@@ -1,7 +1,6 @@
 import { Awaitable, Context, Logger, Schema } from 'koishi';
 import { PicMiddlewareConfig } from './config';
 import {
-  BasePlugin,
   CreatePluginFactory,
   Inject,
   InjectLogger,
@@ -9,13 +8,14 @@ import {
   PartialDeep,
   Reusable,
   schemaFromClass,
+  StarterPlugin,
 } from 'koishi-thirdeye';
 import PicsContainer, { PicMiddlewareInfo } from './index';
 import { PicMiddleware, PicNext } from './def';
 
 @Reusable()
 export class BasePicMiddlewarePlugin
-  extends BasePlugin<PicMiddlewareConfig>
+  extends StarterPlugin(PicMiddlewareConfig)
   implements PicMiddleware, LifecycleEvents
 {
   @Inject(true)
@@ -42,7 +42,7 @@ export const PicMiddlewarePlugin = CreatePluginFactory(
 export function PlainPicMiddlewarePlugin<C>(dict: {
   [K in keyof C]: Schema<C[K]>;
 }) {
-  const Config = schemaFromClass(PicMiddlewareConfig) as Schema<
+  const Config = schemaFromClass(PicMiddlewareConfig) as unknown as Schema<
     PartialDeep<PicMiddlewareConfig & C>,
     PicMiddlewareConfig & C
   >;

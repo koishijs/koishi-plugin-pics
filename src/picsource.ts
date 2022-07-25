@@ -82,7 +82,7 @@ export const PicSourcePlugin = CreatePluginFactory(
 export function PlainPicSourcePlugin<C>(dict: {
   [K in keyof C]: Schema<C[K]>;
 }) {
-  const Config = schemaFromClass(PicSourceConfig) as Schema<
+  const Config = schemaFromClass(PicSourceConfig) as unknown as Schema<
     PartialDeep<PicSourceConfig & C>,
     PicSourceConfig & C
   >;

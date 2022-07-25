@@ -1,5 +1,6 @@
 const path = require('path');
 const packgeInfo = require('./package.json');
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
 
 function externalsFromDep() {
   return Object.fromEntries(
@@ -42,5 +43,12 @@ module.exports = {
   externals: {
     koishi: 'koishi',
     ...(packAll ? {} : externalsFromDep()),
+  },
+  optimization: {
+    minimizer: [
+      new ESBuildMinifyPlugin({
+        keepNames: true,
+      }),
+    ],
   },
 };
