@@ -1,11 +1,11 @@
-import { App } from 'koishi';
+import { Context } from 'koishi';
 import TargetPlugin from '../src';
 import ConsolePlugin from '@koishijs/plugin-console';
 import SandboxPlugin from '@koishijs/plugin-sandbox';
 import DatabasePlugin from '@koishijs/plugin-database-memory';
 import ExtrasInDev from './extras';
 
-const app = new App({
+const app = new Context({
   port: 14514,
   host: 'localhost',
   prefix: '.',

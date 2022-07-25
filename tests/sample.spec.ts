@@ -1,11 +1,11 @@
-import { App } from 'koishi';
+import { Context } from 'koishi';
 import TargetPlugin from '../src';
 
 describe('Test of plugin.', () => {
-  let app: App;
+  let app: Context;
 
   beforeEach(async () => {
-    app = new App();
+    app = new Context();
     app.plugin(TargetPlugin, { commandName: 'setu' });
     await app.start();
   });
