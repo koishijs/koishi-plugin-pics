@@ -42,6 +42,8 @@ module.exports = {
   },
   externals: {
     koishi: 'koishi',
+    '@satorijs/satori': '@satorijs/satori',
+    cordis: 'cordis',
     ...(packAll ? {} : externalsFromDep()),
   },
   optimization: {
