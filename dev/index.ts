@@ -12,10 +12,10 @@ const app = new Context({
 });
 
 // Console and sandbox
-app.plugin(SandboxPlugin);
 app.plugin(ConsolePlugin, {
   open: false,
 });
+app.plugin(SandboxPlugin);
 
 // Database
 app.plugin(DatabasePlugin);

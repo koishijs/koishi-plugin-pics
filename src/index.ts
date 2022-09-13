@@ -230,14 +230,14 @@ export default class PicsContainer
 
   async getSegment(url: string, bot?: Bot) {
     url = await this.resolveUrl(url);
-    const picData: segment.Data = {
+    const picData = {
       [(url.startsWith('base64://') && this.isOneBotBot(bot)) ||
       this.config.preferFile
         ? 'file'
         : 'url']: url,
-      cache: true,
+      cache: 'true',
     };
-    return segment('image', picData);
+    return segment('image', picData, []);
   }
 
   private installDefaultMiddlewares() {
@@ -287,7 +287,7 @@ export default class PicsContainer
       return notFound();
     }
 
-    let msg = await this.getSegment(result.url, bot);
+    let msg = (await this.getSegment(result.url, bot)).toString();
     if (result.description) {
       msg += `\n${result.description}`;
     }
