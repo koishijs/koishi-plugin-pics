@@ -16,6 +16,7 @@ app.plugin(ConsolePlugin, {
   open: false,
 });
 app.plugin(SandboxPlugin);
+// app.plugin(SandboxPlugin);
 
 // Database
 app.plugin(DatabasePlugin);
