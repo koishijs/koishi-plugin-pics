@@ -228,16 +228,9 @@ export default class PicsContainer
     }
   }
 
-  async getSegment(url: string, bot?: Bot) {
+  async getSegment(url: string) {
     url = await this.resolveUrl(url);
-    const picData = {
-      [(url.startsWith('base64://') && this.isOneBotBot(bot)) ||
-      this.config.preferFile
-        ? 'file'
-        : 'url']: url,
-      cache: 'true',
-    };
-    return segment('image', picData, []);
+    return segment.image(url);
   }
 
   private installDefaultMiddlewares() {
@@ -278,7 +271,6 @@ export default class PicsContainer
     @PutOption('source', `-s <source>`) source: string,
     @PutArgs() picTags: string[],
     @PutRenderer('.not-found') notFound: Renderer,
-    @PutBot() bot: Bot,
   ) {
     const sourceTags = source?.split(/[ ,+\uFF0C\uFF0B\u3001]/) || [];
     picTags ||= [];
@@ -287,7 +279,7 @@ export default class PicsContainer
       return notFound();
     }
 
-    let msg = (await this.getSegment(result.url, bot)).toString();
+    let msg = (await this.getSegment(result.url)).toString();
     if (result.description) {
       msg += `\n${result.description}`;
     }
