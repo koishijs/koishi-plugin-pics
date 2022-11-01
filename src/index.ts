@@ -186,7 +186,7 @@ export default class PicsContainer
     if (url.startsWith('base64://')) {
       return Buffer.from(url.slice(9), 'base64');
     }
-    const { data } this._http.file(url);
+    const { data } = this._http.file(url);
     return data;
   }
 
