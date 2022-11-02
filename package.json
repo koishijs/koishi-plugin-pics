@@ -31,9 +31,9 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@koishijs/plugin-console": "^4.5.4",
+    "@koishijs/plugin-console": "^4.6.9",
     "@koishijs/plugin-database-memory": "^1.5.0",
-    "@koishijs/plugin-sandbox": "^2.2.9",
+    "@koishijs/plugin-sandbox": "^2.3.3",
     "@types/jest": "^29.2.0",
     "@types/lodash": "^4.14.176",
     "@types/node": "^16.11.4",

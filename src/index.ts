@@ -182,11 +182,17 @@ export default class PicsContainer
     );
   }
 
-  async urlToBuffer(url: string, extraConfig: AxiosRequestConfig = {}): Promise<Buffer> {
+  async urlToBuffer(
+    url: string,
+    extraConfig: AxiosRequestConfig = {},
+  ): Promise<Buffer> {
     if (url.startsWith('base64://')) {
       return Buffer.from(url.slice(9), 'base64');
     }
-    const { data } = await this._http.file(url);
+    const data = await this._http.get<Buffer>(url, {
+      responseType: 'arraybuffer',
+      ...extraConfig,
+    });
     return data as Buffer;
   }
 
