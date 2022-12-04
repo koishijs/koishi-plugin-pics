@@ -1,5 +1,5 @@
 import { DefinePlugin, Inject } from 'koishi-thirdeye';
-import { Assets } from 'koishi';
+import Assets from '@koishijs/assets';
 import { PicNext } from '../def';
 import { PicMiddlewarePlugin } from '../middleware';
 
