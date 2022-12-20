@@ -32,6 +32,9 @@ export type PicsPluginConfigLike = Partial<PicsPluginConfig>;
 
 // For convenience of plugins
 
+const questerConfigDict = { ...Quester.Config.dict };
+delete questerConfigDict.endpoint;
+
 export class PicSourceConfig implements PicSourceInfo {
   @SchemaProperty({ type: 'string', default: [], description: '图源标签' })
   tags: string[];
@@ -43,6 +46,13 @@ export class PicSourceConfig implements PicSourceInfo {
   description?: string;
   @SchemaProperty({ description: '是否为默认图源' })
   isDefault?: boolean;
+
+  @SchemaProperty({
+    type: Schema.object(questerConfigDict),
+    description: '请求设置',
+    default: {},
+  })
+  http: Omit<Quester.Config, 'endpoint'>;
 
   // 给目标对象注入上述对象。
   applyTo(target: PicSourceInfo) {

@@ -1,4 +1,4 @@
-import { Context, Awaitable, Logger, Schema } from 'koishi';
+import { Context, Awaitable, Logger, Schema, Quester } from 'koishi';
 import {
   PartialDeep,
   InjectConfig,
@@ -8,6 +8,7 @@ import {
   schemaFromClass,
   Apply,
   Reusable,
+  SchemaClass,
 } from 'koishi-thirdeye';
 import PicsContainer from '.';
 import { PicSourceConfig } from './config';
@@ -58,6 +59,8 @@ export class BasePicSourcePlugin extends PicSource {
     super(ctx);
   }
 
+  http: Quester;
+
   @InjectConfig()
   config: PicSourceConfig;
 
@@ -69,6 +72,7 @@ export class BasePicSourcePlugin extends PicSource {
 
   @Apply()
   initializeSource() {
+    this.http = this.ctx.http.extend(this.config.httpConfig || {});
     this.config.applyTo(this);
     this.pics.addSource(this);
   }
@@ -82,16 +86,18 @@ export const PicSourcePlugin = CreatePluginFactory(
 export function PlainPicSourcePlugin<C>(dict: {
   [K in keyof C]: Schema<C[K]>;
 }) {
-  const Config = schemaFromClass(PicSourceConfig) as unknown as Schema<
+  const Config = SchemaClass(PicSourceConfig) as unknown as Schema<
     PartialDeep<PicSourceConfig & C>,
     PicSourceConfig & C
   >;
   Object.assign(Config.dict, dict);
   return class PlainPicSourcePluginBase extends PicSource {
-    config: PicSourceInfo & C;
-    constructor(ctx: Context, config: PartialDeep<C & PicSourceInfo>) {
+    http: Quester;
+    config: PicSourceConfig & C;
+    constructor(ctx: Context, config: PartialDeep<C & PicSourceConfig>) {
       super(ctx);
-      this.config = config as PicSourceInfo & C;
+      this.config = config as PicSourceConfig & C;
+      this.http = this.ctx.http.extend(this.config.httpConfig || {});
       this.applyConfig(config);
       ctx.pics.addSource(this);
     }

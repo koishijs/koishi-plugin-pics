@@ -60,7 +60,7 @@ export class TestMultiPicSourcePlugin extends MultiInstancePlugin(
 
 export default class ExtrasInDev {
   constructor(ctx: Context) {
-    ctx.plugin(TestPicSourcePlugin, {
+    ctx.plugin(TestPlainPicSourcePlugin, {
       // name: 'zh-CN',
       isDefault: true,
       // endpoint: 'https://cdn02.moecube.com:444',
