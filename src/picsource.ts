@@ -72,7 +72,7 @@ export class BasePicSourcePlugin extends PicSource {
 
   @Apply()
   initializeSource() {
-    this.http = this.ctx.http.extend(this.config.httpConfig || {});
+    this.http = this.ctx.http.extend(this.config.http || {});
     this.config.applyTo(this);
     this.pics.addSource(this);
   }
@@ -97,7 +97,7 @@ export function PlainPicSourcePlugin<C>(dict: {
     constructor(ctx: Context, config: PartialDeep<C & PicSourceConfig>) {
       super(ctx);
       this.config = config as PicSourceConfig & C;
-      this.http = this.ctx.http.extend(this.config.httpConfig || {});
+      this.http = this.ctx.http.extend(this.config.http || {});
       this.applyConfig(config);
       ctx.pics.addSource(this);
     }
