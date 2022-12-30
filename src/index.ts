@@ -1,8 +1,8 @@
 // import 'source-map-support/register';
-import { Context, Random, Logger, Bot, remove } from 'koishi';
+import { Context, Random, Logger, Bot, remove, Session, Dict } from 'koishi';
 import { PicsPluginConfig } from './config';
 import _ from 'lodash';
-import { segment, Quester } from 'koishi';
+import { segment, Quester, Element } from 'koishi';
 import {
   StarterPlugin,
   Caller,
@@ -14,11 +14,11 @@ import {
   LifecycleEvents,
   Provide,
   PutArgs,
-  PutBot,
   PutOption,
   PutRenderer,
   Renderer,
   UseCommand,
+  UseComponent,
 } from 'koishi-thirdeye';
 import { AxiosRequestConfig } from 'axios';
 import { PicAssetsTransformMiddleware } from './middlewares/assets';
@@ -321,5 +321,20 @@ export default class PicsContainer
   onApply() {
     this._http = this.http.extend(this.config.httpConfig);
     this.installDefaultMiddlewares();
+  }
+
+  @UseComponent('pics')
+  async picsComponent(attrs: Dict<any>, children: Element[], session: Session) {
+    const tags = attrs.tags?.split(/[ ,+\uFF0C\uFF0B\u3001]/) || [];
+    const sourceTags = attrs.source?.split(/[ ,+\uFF0C\uFF0B\u3001]/) || [];
+    const result = await this.randomPic(tags, sourceTags);
+    if (!result) {
+      return attrs.fallback || '';
+    }
+    const segment = await this.getSegment(result.url);
+    if (result.description) {
+      segment.attrs.description = result.description;
+    }
+    return segment;
   }
 }

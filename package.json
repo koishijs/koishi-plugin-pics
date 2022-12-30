@@ -28,13 +28,13 @@
   "homepage": "https://github.com/koishijs/koishi-plugin-pics",
   "dependencies": {
     "@koishijs/assets": "^1.0.1",
-    "koishi-thirdeye": "^11.1.14",
+    "koishi-thirdeye": "^11.1.17",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@koishijs/plugin-console": "^4.7.1",
+    "@koishijs/plugin-console": "^5.0.0",
     "@koishijs/plugin-database-memory": "^2.0.1",
-    "@koishijs/plugin-sandbox": "^2.4.0",
+    "@koishijs/plugin-sandbox": "^2.5.0",
     "@types/jest": "^29.2.0",
     "@types/lodash": "^4.14.176",
     "@types/node": "^16.11.4",
@@ -57,7 +57,7 @@
     "ws": "^8.3.0"
   },
   "peerDependencies": {
-    "koishi": "^4.10.4"
+    "koishi": "^4.10.10"
   },
   "jest": {
     "moduleFileExtensions": [

@@ -1,4 +1,4 @@
-import { Awaitable, Context, Schema } from 'koishi';
+import { Awaitable, Context, Schema, segment } from 'koishi';
 import {
   DefinePlugin,
   MultiInstancePlugin,
@@ -65,6 +65,8 @@ export default class ExtrasInDev {
       isDefault: true,
       // endpoint: 'https://cdn02.moecube.com:444',
     });
+
+    ctx.command('pic2').action(() => segment('pics'));
   }
 
   static using = ['pics'] as const;
