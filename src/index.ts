@@ -193,7 +193,7 @@ export default class PicsContainer
     }
     const data = await this._http.file(url);
     return {
-      buffer: data.data as Buffer,
+      buffer: Buffer.from(data.data),
       mime: data.mime,
     };
   }
