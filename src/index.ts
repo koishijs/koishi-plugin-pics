@@ -1,5 +1,5 @@
 // import 'source-map-support/register';
-import { Context, Random, Logger, Bot, remove, Session, Dict } from 'koishi';
+import { Context, Random, Logger, remove, Session, Dict } from 'koishi';
 import { PicsPluginConfig } from './config';
 import _ from 'lodash';
 import { segment, Quester, Element } from 'koishi';
@@ -20,11 +20,14 @@ import {
   UseCommand,
   UseComponent,
 } from 'koishi-thirdeye';
-import { AxiosRequestConfig } from 'axios';
 import { PicAssetsTransformMiddleware } from './middlewares/assets';
 import { PicDownloaderMiddleware } from './middlewares/download';
 import { PicMiddleware, PicNext, PicResult } from './def';
 import { PicSource } from './picsource';
+import FileType from 'file-type';
+import path from 'path';
+import ext2mime from 'ext2mime';
+import * as fs from 'fs';
 export * from './config';
 export * from './middleware';
 export * from './picsource';
@@ -174,38 +177,45 @@ export default class PicsContainer
     return this.fetchPicsWithSources(sources, picTags);
   }
 
-  isOneBotBot(bot?: Bot) {
-    return (
-      bot &&
-      (bot.platform === 'onebot' ||
-        (bot.platform === 'qqguild' && bot['parentBot']?.platform === 'onebot'))
-    );
-  }
-
-  async urlToBuffer(
-    url: string,
-    extraConfig: AxiosRequestConfig = {},
-  ): Promise<Buffer> {
+  async urlToBuffer(url: string): Promise<{ buffer: Buffer; mime: string }> {
     if (url.startsWith('base64://')) {
-      return Buffer.from(url.slice(9), 'base64');
+      const buf = Buffer.from(url.slice(9), 'base64');
+      const type = await FileType.fromBuffer(buf);
+      return { buffer: buf, mime: type?.mime || 'application/octet-stream' };
     }
-    const data = await this._http.get<Buffer>(url, {
-      responseType: 'arraybuffer',
-      ...extraConfig,
-    });
-    return data as Buffer;
+    if (url.startsWith('file://')) {
+      const filePath = url.slice(7);
+      const buf = await fs.promises.readFile(filePath);
+      const mime =
+        ext2mime(path.extname(filePath)) ||
+        (await FileType.fromBuffer(buf)).mime;
+      return { buffer: buf, mime };
+    }
+    const data = await this._http.file(url);
+    return {
+      buffer: data.data as Buffer,
+      mime: data.mime,
+    };
   }
 
-  bufferToUrl(buffer: Buffer) {
-    return `base64://${buffer.toString('base64')}`;
+  async bufferToUrl(buffer: Buffer, mime?: string) {
+    if (!mime) {
+      const result = await FileType.fromBuffer(buffer);
+      if (result) {
+        mime = result.mime;
+      } else {
+        mime = 'application/octet-stream';
+      }
+    }
+    return `data:${mime};base64,${buffer.toString('base64')}`;
   }
 
-  async download(url: string, extraConfig: AxiosRequestConfig = {}) {
+  async download(url: string) {
     if (url.startsWith('base64://')) {
-      return url;
+      return this.bufferToUrl(Buffer.from(url.slice(9), 'base64'));
     }
-    const buffer = await this.urlToBuffer(url, extraConfig);
-    return this.bufferToUrl(buffer);
+    const data = await this.urlToBuffer(url);
+    return this.bufferToUrl(data.buffer, data.mime);
   }
 
   async resolveUrl(url: string, middlewares = this.picMiddlewares) {
