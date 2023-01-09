@@ -65,6 +65,7 @@ export default class ExtrasInDev {
       isDefault: true,
       // endpoint: 'https://cdn02.moecube.com:444',
     });
+    ctx.plugin(TestPicSourcePlugin, { name: 'en-US' });
 
     ctx.command('pic2').action(() => segment('pics'));
   }

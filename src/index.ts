@@ -1,4 +1,3 @@
-// import 'source-map-support/register';
 import { Context, Random, Logger, remove, Session, Dict } from 'koishi';
 import { PicsPluginConfig } from './config';
 import _ from 'lodash';

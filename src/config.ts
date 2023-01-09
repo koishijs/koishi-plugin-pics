@@ -1,4 +1,3 @@
-// import 'source-map-support/register';
 import { SchemaProperty, RegisterSchema, SchemaClass } from 'koishi-thirdeye';
 import { Quester, Schema } from 'koishi';
 import { PicMiddleware, PicMiddlewareInfo, PicSourceInfo } from './def';

@@ -21,10 +21,10 @@ app.plugin(SandboxPlugin);
 // Database
 app.plugin(DatabasePlugin);
 
-// Some extras
-app.plugin(ExtrasInDev);
-
 // Target plugin
 app.plugin(TargetPlugin, { useBase64: true });
+
+// Some extras
+app.plugin(ExtrasInDev);
 
 app.start();
